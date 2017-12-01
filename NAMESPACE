@@ -2,8 +2,10 @@
 
 export(activity2states)
 export(activity2thresholds)
+export(aggregate_thresholds)
 export(create_animaltag)
 export(identify_activity_gaps)
+export(plot_thresholds)
 export(regularize_activity)
 export(remove_activity_gaps)
 export(smooth_activity)

@@ -4,7 +4,7 @@
 \alias{thresholds2states}
 \title{Thresholds2states}
 \usage{
-thresholds2states(activity, activity_gaps, thresholds, threshold_par, period)
+thresholds2states(activity, activity_gaps, thresholds, threshold_par)
 }
 \arguments{
 \item{activity}{A data.table with the activity data. The following columns
@@ -12,7 +12,7 @@ should be present: 'animal_tag' and 'ts'.}
 
 \item{activity_gaps}{The data.table with the identified activity gaps.}
 
-\item{period}{#'}
+\item{threshold_parm}{}
 }
 \value{
 Data.table with the ...
@@ -24,7 +24,6 @@ Data.table with the ...
 active_states_a <-  thresholds2states(activity = activity_data,
                                       activity_gaps = activity_data_gaps,
                                       thresholds = activity_thresholds_final,
-                                      threshold_par = 'threshold_a',
-                                      period = 'year_week')
+                                      threshold_par = 'threshold_a')
 
 }
