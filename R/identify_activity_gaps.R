@@ -21,9 +21,13 @@ identify_activity_gaps <- function(activity,
     activity[,.(to_NA = ts[which(diff(is.na(c(1,get(axis),1))) == 1)],
                      end_NA = ts[which(diff(is.na(c(1,get(axis),1))) == -1)-1]),
                   by = animal_tag]
-  activity_gaps[,animal_id := as.integer(unlist(strsplit(animal_tag, split = "_"))[1]),
-                     by = 1:length(animal_tag)]
-  activity_gaps[,tag_code := unlist(strsplit(animal_tag, split = "_"))[2],
-                     by = 1:length(animal_tag)]
+  if (nrow(activity_gaps) > 0) {
+    activity_gaps[, animal_id := as.integer(unlist(strsplit(animal_tag, split = "_"))[1]),
+                   by = 1:length(animal_tag)]
+    activity_gaps[, tag_code := unlist(strsplit(animal_tag, split = "_"))[2],
+                   by = 1:length(animal_tag)]
+  } else {
+    activity_gaps[, animal_id := as.integer(),][, tag_code := as.character()]
+  }
   return(activity_gaps)
 }
