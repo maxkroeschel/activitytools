@@ -13,6 +13,8 @@ RoxygenNote: 6.0.1
 Imports: 
     manipulate,
     zoo,
-    lubridate
+    lubridate,
+    maptools,
+    sp
 Depends: 
     data.table
