@@ -1,0 +1,262 @@
+#' Calculate proportion of time in state active
+#'
+#' \code{states2prop_time_active} calculates the proportion of time in state
+#'   active for each animal_tag and day.
+#'
+#' @param active_states A data.table with the predicted active states (return
+#'   of function \code{\link{thresholds2states}}.
+#' @param activity_gaps A data.table with the identified gaps in the activity
+#'    data (return of function \code{\link{identify_activity_gaps}}.
+#' @param gps A data.table with the GPS positions (at least one) of the animals.
+#'   The table should contain the columns: <animal_tag>, <longitude>, <latitude>.
+#' @param pos A vector containing longitude and latitude of the research area.
+#'   This parameter is only necessary when no GPS-positions are provided or when
+#'   the GPS-positions for some animals are missing.
+#' @param dayshift Either "sunrise" or "dawn". Defines when consecutive days are
+#'   separated so that each day contains one complete night and one complete day.
+#'   The identifier for each day is called <date_se> for sunrise and <date_dawn>
+#'   for dawn.
+#' @param dawn_degree An integer between 0 and 90 that defines the angle of the
+#'   sun below the horizon at dawn and dusk.
+#' @param max_na_per_day An integer with the maximum number of minutes with NA
+#'   that are alloes for each day. When this threshold is crossed proportion of
+#'   time in state active will be set to NA for this day.
+#' @return A data.table with the proportion of time in state active for each
+#'   animal_tag and day. The proportion of time in state active is returned for
+#'   the whole day <total>, during daytime <day> (sunrise till sunset), during
+#'   nighttime <night> (dusk till dawn), during dusk <dusk> (sunset till the
+#'   sun reaches dawn_degree),during dawn <dawn> ()
+#'
+#' @examples states2prop_time_active(active_states = active_states_a,
+#'                                   activity_gaps = activity_data_gaps,
+#'                                   gps = gps_data,
+#'                                   dayshift = "sunrise",
+#'                                   dawn_degree = 12,
+#'                                   max_na_per_day = 30)
+
+#'
+#' @import data.table
+#' @export
+
+states2prop_time_active <- function(active_states,
+                                    activity_gaps,
+                                    gps = NULL,
+                                    pos = NULL,
+                                    dayshift = "sunrise",
+                                    dawn_degree = 12,
+                                    max_na_per_day = 0) {
+
+if (!is.null(gps)) {
+    hr_center <- gps[!is.na(longitude),
+                     .("median_longitude" = median(as.numeric(longitude)),
+                       "median_latitude" = median(as.numeric(latitude))),
+                      by = animal_tag]
+    } else if (all(is.na(pos))) {
+      stop('You have to provide either a table with the GPS-positions
+            or coordinates of the research area!')}
+
+prop_time_active <-
+do.call("rbind",
+  lapply(active_states[, unique(animal_tag),], function(i) {
+    print(paste("animal_id:", i, " processing"))
+
+    temp_active_states <- active_states[animal_tag == i,,]
+    temp_activity_gaps <- activity_gaps[animal_tag == i,,]
+
+    animal_minutes <-
+      data.table(minute =
+                   seq(trunc(temp_active_states[, min(to_active),], "mins"),
+                       trunc(temp_active_states[, max(end_active),], "mins"),
+                       by = "mins"),
+                 active = 0)
+    animal_minutes[,tmp_minute := minute]
+    animal_minutes[,date := as.Date(minute)]
+
+    setkey(temp_active_states, to_active, end_active)
+    setkey(animal_minutes, minute, tmp_minute)
+
+    animal_minutes <- data.table::foverlaps(animal_minutes, temp_active_states,
+                                            type="within",
+                                            by.x = c("minute", "tmp_minute"),
+                                            by.y = c("to_active", "end_active"))
+
+    animal_minutes[!is.na(duration), active := 1][
+      ,c("to_active","end_active", "duration") := NA]
+
+    # add NA to animal_minutes where no activity is available
+    if (nrow(temp_activity_gaps) > 0) {
+      for (j in 1:nrow(temp_activity_gaps)) {
+        animal_minutes[
+          minute >= temp_activity_gaps[j, to_NA, ] &
+            minute <= temp_activity_gaps[j, end_NA, ],
+          active := NA,]
+        }
+      }
+
+    if (exists('hr_center') & nrow(hr_center[animal_tag == i ,,]) == 1) {
+      temp_pos <- matrix(unlist(hr_center[animal_tag == i,
+                                         .(median_longitude, median_latitude)]),
+                      nrow = 1)
+      } else if (!all(is.na(pos))) {
+        temp_pos <- matrix(pos, nrow = 1)
+       } else {
+          stop('No GPS-position for this animal availabe to calculate
+                time of day!')}
+
+  nighttime <- data.table(
+    "ts_dawn" = maptools::crepuscule(temp_pos,
+                                     as.POSIXct(animal_minutes[,unique(date)]),
+                                     solarDep=c(dawn_degree),
+                                     direction="dawn", POSIXct.out=TRUE)$time,
+    "ts_sr" = maptools::crepuscule(temp_pos,
+                                   as.POSIXct(animal_minutes[,unique(date)]),
+                                   solarDep=c(0),
+                                   direction="dawn",
+                                   POSIXct.out=TRUE)$time,
+    "ts_ss" = maptools::crepuscule(temp_pos,
+                                   as.POSIXct(animal_minutes[,unique(date)]),
+                                   solarDep=c(0),
+                                   direction="dusk", POSIXct.out=TRUE)$time,
+    "ts_dusk" = maptools::crepuscule(temp_pos,
+                                     as.POSIXct(animal_minutes[,unique(date)]),
+                                     solarDep=c(dawn_degree),
+                                     direction="dusk", POSIXct.out=TRUE)$time,
+    "ts_dawn_plusone" =
+      maptools::crepuscule(temp_pos,
+                           as.POSIXct(animal_minutes[,unique(date)]) +
+                             lubridate::days(1),
+                           solarDep=c(dawn_degree),
+                           direction="dawn", POSIXct.out=TRUE)$time,
+    "ts_sr_plusone" =
+      maptools::crepuscule(temp_pos,
+                           as.POSIXct(animal_minutes[,unique(date)]) +
+                             lubridate::days(1),
+                           solarDep=c(0),
+                           direction="dawn", POSIXct.out=TRUE)$time)
+  nighttime[,date_dawn := as.Date(ts_dawn)]
+  nighttime[,date_sr := as.Date(ts_sr)]
+
+  if (dayshift == "sunrise") {
+  setkey(nighttime, ts_sr, ts_sr_plusone)
+  setkey(animal_minutes, minute, tmp_minute)
+  animal_minutes <- foverlaps(animal_minutes, nighttime, type="within",
+                              by.x = c("minute", "tmp_minute"),
+                              by.y = c("ts_sr", "ts_sr_plusone"))
+
+  animal_minutes[, night := 1][, dawn := 0][,day := 0][, dusk := 0]
+  animal_minutes[minute >= ts_dawn & minute < ts_dusk, night := 0][
+                  minute >= ts_dawn_plusone, night := 0][
+                  minute >= ts_dawn_plusone, dawn := 1][
+                  minute >= ts_sr & minute < ts_ss, day := 1][
+                  minute >= ts_ss & minute < ts_dusk, dusk := 1]
+  animal_minutes <- animal_minutes[,.(minute,
+                                      date_sr,
+                                      night,
+                                      dawn,
+                                      day,
+                                      dusk,
+                                      active), ]
+
+# remove rows with no date_sr (these occur at the first night when the
+# animal was tagged after 0:00)
+  animal_minutes <- animal_minutes[!is.na(date_sr),]
+
+  temp_prop_time_active <-
+      animal_minutes[,.(night = round(sum((night == 1 & active == 1), na.rm=T) /
+                                        sum(night==1),4),
+                          day = round(sum((day == 1 & active == 1), na.rm=T) /
+                                        sum(day==1),4),
+                          dawn = round(sum((dawn == 1 & active == 1), na.rm=T) /
+                                         sum(dawn==1),4),
+                          dusk = round(sum((dusk == 1 & active == 1), na.rm=T) /
+                                         sum(dusk==1),4),
+                          day_twi = round(sum((night == 0 & active == 1), na.rm=T) /
+                                            sum(night==0),4),
+                          night_twi = round(sum((day == 0 & active == 1), na.rm=T) /
+                                              sum(day==0),4),
+                          total = round(sum(active == 1, na.rm =T)/.N,4),
+                          remove = sum(is.na(active))/.N,
+                          nr_mins = .N),
+                       by = .(date_sr)]
+
+  setkey(temp_prop_time_active, date_sr)
+  setkey(nighttime, date_sr)
+
+  temp_prop_time_active[nighttime, `:=` (ts_sr = i.ts_sr,
+                                         ts_ss = i.ts_ss,
+                                         ts_dusk = i.ts_dusk,
+                                         ts_dawn = i.ts_dawn_plusone),]
+
+  temp_prop_time_active <- temp_prop_time_active[!is.na(date_sr),, ]
+  temp_prop_time_active[, animal_tag := i, ]
+
+  } else if (dayshift == "dawn") {
+
+    setkey(nighttime, ts_dawn, ts_dawn_plusone)
+    setkey(animal_minutes, minute, tmp_minute)
+    animal_minutes <- foverlaps(animal_minutes, nighttime, type="within",
+                                by.x = c("minute", "tmp_minute"),
+                                by.y = c("ts_dawn", "ts_dawn_plusone"))
+
+    animal_minutes[, night := 1][, dawn := 0][,day := 0][, dusk := 0]
+    animal_minutes[minute >= ts_dawn & minute < ts_dusk, night := 0][
+      minute >= ts_dawn & minute < ts_sr, dawn := 1][
+        minute >= ts_sr & minute < ts_ss, day := 1][
+          minute >= ts_ss & minute < ts_dusk, dusk := 1]
+    animal_minutes <- animal_minutes[,.(minute, date_dawn, night, dawn, day,
+                                        dusk, active)]
+
+    # remove rows with no date_dawn (these occur at the first night when the
+    # animal was tagged after 0:00)
+    animal_minutes <- animal_minutes[!is.na(date_dawn),]
+
+    temp_prop_time_active <-
+      animal_minutes[,.(night = round(sum((night == 1 & active == 1), na.rm=T) /
+                                        sum(night==1),4),
+                        day = round(sum((day == 1 & active == 1), na.rm=T) /
+                                      sum(day==1),4),
+                        dawn = round(sum((dawn == 1 & active == 1), na.rm=T) /
+                                       sum(dawn==1),4),
+                        dusk = round(sum((dusk == 1 & active == 1), na.rm=T) /
+                                       sum(dusk==1),4),
+                        day_twi = round(sum((night == 0 & active == 1), na.rm=T) /
+                                          sum(night==0),4),
+                        night_twi = round(sum((day == 0 & active == 1), na.rm=T) /
+                                            sum(day==0),4),
+                        total = round(sum(active == 1, na.rm =T)/.N,4),
+                        remove = sum(is.na(active))/.N,
+                        nr_mins = .N),
+                     by = .(date_dawn)]
+
+    setkey(temp_prop_time_active, date_dawn)
+    setkey(nighttime, date_dawn)
+
+    temp_prop_time_active[nighttime, `:=` (ts_dawn = i.ts_dawn, ts_sr = i.ts_sr,
+                                           ts_ss = i.ts_ss, ts_dusk = i.ts_dusk)]
+    temp_prop_time_active <- temp_prop_time_active[!is.na(date_dawn), ]
+    temp_prop_time_active[, animal_tag := i, ]
+  }
+
+  # add NA to days where more than max_na_per_day (minutes) if activity were missing
+  temp_prop_time_active[remove > max_na_per_day/(60*24),
+                        `:=` (night=NA, day=NA, dawn=NA, dusk = NA, day_twi = NA,
+                               night_twi = NA, total=NA), ]
+
+  # add na to days where minutes are missing (mainly start- and end-days of
+  # the observation period), usually a day has 1442 minutes, however, the
+  # day_dawn is defined by the time of sunrise and thus has alternating number
+  # of mins
+  temp_prop_time_active[nr_mins < 1430, `:=` (night=NA, day=NA, dawn=NA, dusk=NA,
+                                              day_twi=NA, night_twi=NA, total=NA)]
+
+  temp_prop_time_active[, c("remove", "nr_mins") := NULL]
+
+  print("- done!")
+  return(temp_prop_time_active)
+  }
+)
+)
+
+prop_time_active <- split_animaltag(prop_time_active)
+
+return(prop_time_active)}
