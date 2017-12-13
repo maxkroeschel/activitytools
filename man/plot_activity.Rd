@@ -5,9 +5,7 @@
 \title{Plot activity data}
 \usage{
 plot_activity(activity, gps = NULL, animal_id = NULL, tag_code = NULL,
-  axis, plot_gps, plot_movement, plot_moving_window, plot_state,
-  window_width_activity_ma, threshold, min_duration_active_state,
-  plot_predicted_state)
+  thresholds)
 }
 \arguments{
 \item{activity}{A data.table with the activity data. The following columns
@@ -15,7 +13,7 @@ should be present: 'animal_tag' and 'ts'.}
 
 \item{gps}{A data.table with the gps data.}
 
-\item{threshold_parm}{}
+\item{thresholds}{}
 }
 \description{
 \code{plot_activity} plots activity data against time of day for each day of
@@ -24,6 +22,7 @@ should be present: 'animal_tag' and 'ts'.}
 \examples{
 plot_activity(activity = activity_data,
               animal_id = '12',
-              gps = gps_data)
+              gps = gps_data,
+              thresholds = activity_threshold_final)
 
 }

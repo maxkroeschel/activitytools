@@ -12,7 +12,8 @@ activity2thresholds(activity, activity_gaps, axis, axis_ma, n_runs,
 \item{activity}{A data.table with the activity data. The following columns
 should be present: 'animal_tag' and 'ts'.}
 
-\item{activity_gaps}{The data.table with the identified activity gaps.}
+\item{activity_gaps}{A data.table with the identified gaps in the activity
+data (return of function \code{\link{identify_activity_gaps}}.}
 
 \item{axis}{a}
 

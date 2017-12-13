@@ -4,7 +4,8 @@
 #'
 #' @param activity A data.table with the activity data. The following columns
 #'   should be present: 'animal_tag' and 'ts'.
-#' @param activity_gaps The data.table with the identified activity gaps.
+#' @param activity_gaps A data.table with the identified gaps in the activity
+#'    data (return of function \code{\link{identify_activity_gaps}}.
 #' @param axis a
 #' @param axis_ma a
 #' @param n_runs a
