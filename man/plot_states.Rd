@@ -4,7 +4,7 @@
 \alias{plot_states}
 \title{Plot states}
 \usage{
-plot_states(active_states, prop_time_active)
+plot_states(active_states, prop_time_active, gps = NULL)
 }
 \arguments{
 \item{active_states}{A data.table with the active states (return of function
@@ -12,6 +12,8 @@ plot_states(active_states, prop_time_active)
 
 \item{prop_time_active}{A data.table with the proportion of time in state
 active (return of \code{\link{states2prop_time_active}})}
+
+\item{gps}{A data.table with the GPS-positions of the animals.}
 }
 \description{
 \code{plot_states} plots the active states and proportion of time in state

@@ -7,6 +7,7 @@
 #'  \code{\link{thresholds2states}}).
 #' @param prop_time_active A data.table with the proportion of time in state
 #'   active (return of \code{\link{states2prop_time_active}})
+#' @param gps A data.table with the GPS-positions of the animals.
 #'
 #' @examples
 #' plot_states(
@@ -15,7 +16,8 @@
 #' @export
 
 plot_states <- function(active_states,
-                        prop_time_active){
+                        prop_time_active,
+                        gps = NULL){
 
   oldpar <- par(no.readonly=TRUE)
   on.exit(par(oldpar))
@@ -90,6 +92,19 @@ plot_states <- function(active_states,
            col = adjustcolor( "orange", alpha.f = 0.9))
     rect(0,min(date_seq)-0.45,1440,max(date_seq+0.45))
 
+    if (add_gps == TRUE) {
+      if (is.null(gps)) {
+        message("You have to provide a data.table with the GPS data!")
+      } else {
+        temp_gps <- gps[animal_tag == d_animal_tag,,]
+        if (nrow(temp_gps) > 0) {
+          points(x = temp_gps[,ts2minutes(ts),],
+                 y = temp_gps[,as.integer(as.Date(ts)),],
+                 col = "green", pch = 19, cex = 0.2)
+          } else {message("No GPS data for this animal available!")}
+        }
+      }
+
     par(mar = c(5.1, 0.5, 4.1, 1))
     plot(0,0, xlim = c(0,100),
          ylim = c(as.integer(min(date_seq))-0.5, as.integer(max(date_seq))+0.5),
@@ -124,7 +139,7 @@ plot_states <- function(active_states,
     #par(mar = par_default$mar, mfrow = par_default$mfrow)
     },
 
-    d_animal_tag = manipulate::picker(as.list(active_states[,unique(animal_tag),]))
-
+    d_animal_tag = manipulate::picker(as.list(active_states[,unique(animal_tag),])),
+    add_gps = manipulate::checkbox(label = "add GPS " ,initial = FALSE)
   )}
 
