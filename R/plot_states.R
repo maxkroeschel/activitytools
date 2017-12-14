@@ -10,7 +10,9 @@
 #' @param gps A data.table with the GPS-positions of the animals.
 #'
 #' @examples
-#' plot_states(
+#' plot_states(active_states = active_states_a,
+#'             prop_time_active = prop_time_active,
+#'             gps = gps_data)
 #'
 #' @import data.table
 #' @export

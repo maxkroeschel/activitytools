@@ -151,7 +151,8 @@ activity2states <- function(activity,
       active_states <- active_states[duration >= as.difftime(min_duration_active_state, units = "mins"),,]
 
 
-      return(active_states[,.(to_active,
+      return(active_states[,.("state_id" = 1:.N,
+                              to_active,
                               end_active,
                               duration,
                               act_mean,

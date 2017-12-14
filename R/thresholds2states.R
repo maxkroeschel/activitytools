@@ -27,7 +27,7 @@ thresholds2states <- function(activity,
     lapply(thresholds[,as.character(unique(animal_tag))],
              function(d_animal_tag) {
 
-    print(paste("animal_tag: ",d_animal_tag))
+    print(paste("animal_tag: ",d_animal_tag, "  processing"))
 
     temp_active_states <-
       data.table(do.call("rbind",

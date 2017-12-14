@@ -251,7 +251,7 @@ do.call("rbind",
 
   temp_prop_time_active[, c("remove", "nr_mins") := NULL]
 
-  print("- done!")
+  print("..done!")
   return(temp_prop_time_active)
   }
 )
