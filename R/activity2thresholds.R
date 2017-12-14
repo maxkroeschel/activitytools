@@ -46,8 +46,10 @@
                                   min_duration_active_state,
                                   plot_summary) {
 
+oldpar <- par(no.readonly=TRUE)
+on.exit(par(oldpar))
+
 #  local functions
-################################################################################
 
 # calculate the position of the highest maximum of a density distribution
 # --> used to calculate the start of the threshold_seq
@@ -78,8 +80,7 @@
     return(upper_threshold)}
 
 do.call("rbind",
-
-lapply (activity[,unique(animal_tag)], function(x_animal_tag) {
+ lapply (activity[,unique(animal_tag)], function(x_animal_tag) {
   x_activity <- activity[animal_tag == x_animal_tag,,]
   print(paste("animal_tag:", x_animal_tag, "- processing!", sep = " "))
 
@@ -254,7 +255,7 @@ lapply (activity[,unique(animal_tag)], function(x_animal_tag) {
           curve(dnorm(x, mean=mean(prop_state_active[firstdiff < quantile(firstdiff)[4],firstdiff]),
                       sd=sd(prop_state_active[firstdiff < quantile(firstdiff)[4],firstdiff])), col="grey", lwd=2, add=T)
           # lines(density(prop_state_active[firstdiff < quantile(firstdiff)[4],firstdiff]))
-        par(mfrow = c(1,1))
+        # par(mfrow = c(1,1))
           }
 
         return(data.table("animal_tag" = as.character(x_animal_tag),
