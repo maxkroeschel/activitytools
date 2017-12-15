@@ -21,8 +21,7 @@ The data.table with the gps positions with additional columns
   <active_act_var> = variance of the active state.
 }
 \description{
-\code{states2gps} classifies the GPS positions based on the predicted active
-  states.
+\code{states2gps} classifies GPS positions into active and resting states.
 }
 \examples{
 

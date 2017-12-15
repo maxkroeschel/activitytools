@@ -20,6 +20,8 @@ active (return of \code{\link{states2prop_time_active}})}
   active for each animal.
 }
 \examples{
-plot_states(
+plot_states(active_states = active_states_a,
+            prop_time_active = prop_time_active,
+            gps = gps_data)
 
 }

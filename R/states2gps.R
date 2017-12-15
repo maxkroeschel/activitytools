@@ -1,7 +1,6 @@
 #' Add state information to GPS positions
 #'
-#' \code{states2gps} classifies the GPS positions based on the predicted active
-#'   states.
+#' \code{states2gps} classifies GPS positions into active and resting states.
 #'
 #' @param active_states A data.table with the active states (return of function
 #'  \code{\link{thresholds2states}}).
