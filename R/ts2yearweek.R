@@ -1,11 +1,16 @@
-#' Create identifer for the week of the year from timestamp.
+#' Convert timestamp to year_week.
 #'
-#' \code{ts2yearweek}
+#' \code{ts2yearweek} extracts the week of the year and the year from a
+#'   timestamp and concatenates both to create a unique identifier for each week
+#'   of the year. Around the turn of the year, sometimes, the week of the year
+#'   switches already in the last days of the year, or does not switch at the
+#'   first days of the new year. These days are corrected to maintain continuous
+#'   numbering.
 #'
-#' @param ts
-#' @return
+#' @param ts A vector with timestamps or dates in format POSIXct or Date.
+#' @return A vector with year_week identifier for each week of the year.
 #' @examples
-#'
+#'  ts2yearweek(as.Date("2017-01-01"))
 #' @export
 
 ts2yearweek <- function(ts) {

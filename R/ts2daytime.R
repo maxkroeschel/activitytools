@@ -24,10 +24,10 @@
 #' @export
 
 ts2daytime <- function(long,
-                        lat,
-                        ts,
-                        dawn_degree = 12,
-                        type = "daytime") {
+                       lat,
+                       ts,
+                       dawn_degree = 12,
+                       type = "daytime") {
 
 
   pos <- matrix(c(long, lat), nrow = length(long))

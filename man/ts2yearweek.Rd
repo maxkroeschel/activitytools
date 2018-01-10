@@ -2,13 +2,24 @@
 % Please edit documentation in R/ts2yearweek.R
 \name{ts2yearweek}
 \alias{ts2yearweek}
-\title{Create identifer for the week of the year from timestamp.}
+\title{Convert timestamp to year_week.}
 \usage{
 ts2yearweek(ts)
 }
+\arguments{
+\item{ts}{A vector with timestamps or dates in format POSIXct or Date.}
+}
+\value{
+A vector with year_week identifier for each week of the year.
+}
 \description{
-\code{ts2yearweek}
+\code{ts2yearweek} extracts the week of the year and the year from a
+  timestamp and concatenates both to create a unique identifier for each week
+  of the year. Around the turn of the year, sometimes, the week of the year
+  switches already in the last days of the year, or does not switch at the
+  first days of the new year. These days are corrected to maintain continuous
+  numbering.
 }
 \examples{
-
+ ts2yearweek(as.Date("2017-01-01"))
 }

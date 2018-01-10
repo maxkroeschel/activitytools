@@ -4,16 +4,18 @@
 \alias{states2gps}
 \title{Add state information to GPS positions}
 \usage{
-states2gps(active_states, gps)
+states2gps(active_states, activity_gaps = NULL, gps)
 }
 \arguments{
 \item{active_states}{A data.table with the active states (return of function
 \code{\link{thresholds2states}}).}
 
+\item{activity_gaps}{A data.table with the activity gaps.}
+
 \item{gps}{A data.table with the GPS-positions of the animals.}
 }
 \value{
-The data.table with the gps positions with additional columns
+The data.table with the gps positions and the following columns
   <active> = specifies if the animal was active (1) or resting (0),
   <state_id> = ID,
   <active_duration> = duration,
