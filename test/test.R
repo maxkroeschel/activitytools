@@ -3,45 +3,14 @@
 
 Sys.setenv(TZ='UTC')
 
-# library("RPostgreSQL")
-
-# con_animal_telemetry_db = dbConnect(dbDriver("PostgreSQL"), user="max",
-#                                     password="", host="localhost",
-#                                     port=54321, dbname="animal_telemetry")
-#
-#
-# activity_data <- dbGetQuery(con_animal_telemetry_db,
-#                             "select
-#                                 animal_id,
-#                                 tag_code,
-#                                 act_x,
-#                                 act_y,
-#                                 ts
-#                               from
-#                                 core.activity_data_animals
-#                               where
-#                                 animal_id in (64,67);")
-#
-# gps_data <- dbGetQuery(con_animal_telemetry_db,
-#                             "select
-#                                 animal_id,
-#                                 tag_code,
-#                                 longitude,
-#                                 latitude,
-#                                 dop,
-#                                 ts
-#                               from
-#                                 core.gps_points_animals
-#                               where
-#                                 animal_id in (64,67);")
-
-# save(activity_data, gps_data, file = "./test/test_data.RData")
-
-
 load("test/test_data.RData")
 
 activity_data <- data.table(activity_data)[order(animal_id, ts),,]
 gps_data <- data.table(gps_data)[order(animal_id, ts),,]
+gps_data <- create_animaltag(gps_data)
+
+# activity_data <- activity_data[as.Date(ts) >= as.Date('2007-06-01') &
+#                                  as.Date(ts) < as.Date('2007-07-01'),, ]
 
 activity_data <- create_animaltag(activity_data)
 
@@ -119,3 +88,29 @@ active_states_b <-  thresholds2states(activity = activity_data,
                                       activity_gaps = activity_data_gaps,
                                       thresholds = activity_thresholds_final,
                                       threshold_par = 'threshold_b')
+
+prop_time_active <- states2prop_time_active(active_states = active_states_a,
+                                            activity_gaps = activity_data_gaps,
+                                            gps = gps_data,
+                                            dayshift = "dawn",
+                                            dawn_degree = 12,
+                                            max_na_per_day = 30)
+
+plot_states(active_states = active_states_a,
+            prop_time_active = prop_time_active,
+            gps = gps_data)
+
+gps_data <- states2gps(gps = gps_data,
+                        active_states = active_states_a)
+gps_data <- daytime2gps(gps = tgps_data,
+                         dawn_degree = 12)
+gps_data[,date := as.Date(ts),]
+gps_data <- split_animaltag(gps_data)
+write.table(gps_data, file = "./test/gps_data_export.csv",
+          sep  = ";", row.names = FALSE)
+
+gps_data[, daytime := daytime2gps(long = longitude,
+                        lat = latitude,
+                        ts = ts,
+                        dawn_degree = 12,
+                        type = "daytime")]
