@@ -6,10 +6,10 @@
 \title{Activity data.}
 \format{A data frame with 5 variables and 301262 rows:
 \describe{
-  \item{animal_id}{identifier of the animal.}
-  \item{tag_code}{identifier of the tag.}
-  \item{act_x}{activity values of the x-axis.}
-  \item{act_y}{activity values of the y-axis.}
+  \item{animal_id}{Identifier of the animal.}
+  \item{tag_code}{Identifier of the tag.}
+  \item{act_x}{Activity values of the x-axis.}
+  \item{act_y}{Activity values of the y-axis.}
   \item{ts}{Timestamp of the activity measurement at time zone UTC.}
 }}
 \usage{
