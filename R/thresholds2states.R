@@ -1,6 +1,8 @@
 #' Thresholds2states
 #'
-#' \code{thresholds2states}
+#' Calculates active states based on a list of threshold values (return
+#'   of function \code{\link{activity2thresholds}} that is grouped by a
+#'   defined period with function \code{\link{aggregate_thresholds}})
 #'
 #' @param activity A data.table with the activity data. The following columns
 #'   should be present: 'animal_tag' and 'ts'.

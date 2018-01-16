@@ -38,7 +38,8 @@ activity2states <- function(activity,
   # check if there are enough (n > 5) activity data, otherwise stop
   if (nrow(activity) < 5) {
     # return an empty table
-    return(data.table("to_active" = as.POSIXct(character()),
+    return(data.table("state_id" = integer(),
+                      "to_active" = as.POSIXct(character()),
                       "end_active" = as.POSIXct(character()),
                       "duration" = as.difftime(character(), units = "mins"),
                       "act_mean" = numeric(),
@@ -105,7 +106,8 @@ activity2states <- function(activity,
 
     if (nrow(active_states) == 0) {
       # return an empty table
-      return(data.table("to_active" = as.POSIXct(character()),
+      return(data.table("state_id" = integer(),
+                        "to_active" = as.POSIXct(character()),
                         "end_active" = as.POSIXct(character()),
                         "duration" = as.difftime(character(), units = "mins"),
                         "act_mean" = numeric(),
