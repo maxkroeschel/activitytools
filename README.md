@@ -1,2 +1,2 @@
 # activitytools
-Tools to analyse animal activity data in R
+Tools to analyse and visualize animal activity data in R
