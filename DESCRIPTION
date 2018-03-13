@@ -1,14 +1,16 @@
 Package: activitytools
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Title: Tools to analyse and visualize activity data in R.
+Version: 0.0.0.9000
+Authors@R: person("Kröschel", "Max", email = "max.kroeschel@wildlife.uni-freiburg.de",
+  role = c("aut", "cre"))
+Maintainer: The package maintainer <max.kroeschel@wildlife.uni-freiburg.de>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+BugReports: https://github.com/maxkroeschel/activitytools
 RoxygenNote: 6.0.1
 Imports: 
     manipulate,

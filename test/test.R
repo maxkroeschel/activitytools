@@ -2,8 +2,10 @@
 ################################################################################
 
 Sys.setenv(TZ='UTC')
+library("activitytools")
 
-load("test/test_data.RData")
+data(activity_data)
+data(gps_data)
 
 activity_data <- data.table(activity_data)[order(animal_id, ts),,]
 gps_data <- data.table(gps_data)[order(animal_id, ts),,]

@@ -152,13 +152,22 @@ activity2states <- function(activity,
       # remove active states that are shorter than the minimum duration of active states
       active_states <- active_states[duration >= as.difftime(min_duration_active_state, units = "mins"),,]
 
-
-      return(active_states[,.("state_id" = 1:.N,
+    if (nrow(active_states) == 0) {
+        # return an empty table
+        return(data.table("state_id" = integer(),
+                          "to_active" = as.POSIXct(character()),
+                          "end_active" = as.POSIXct(character()),
+                          "duration" = as.difftime(character(), units = "mins"),
+                          "act_mean" = numeric(),
+                          "act_var" = numeric()))
+      } else {
+          return(active_states[,.("state_id" = 1:.N,
                               to_active,
                               end_active,
                               duration,
                               act_mean,
                               act_var),])
+      }
       }
     }
   }

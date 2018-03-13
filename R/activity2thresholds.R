@@ -135,7 +135,7 @@ do.call("rbind",
    if (length(n_thresholds) == 1) {temp_n_thresholds <- n_thresholds} else {
        temp_n_thresholds <- sample(n_thresholds, size = 1)}
 
-  # set the start value of the threshold sequence to the osition of the first maximun
+  # set the start value of the threshold sequence to the position of the first maximun
   # to facilitate automated selection of the best threshold value
     min_seq <- max(1, round(dmax.f(i_activity[,get(axis_ma),])[1]))
 

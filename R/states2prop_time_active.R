@@ -105,36 +105,46 @@ do.call("rbind",
 
   nighttime <- data.table(
     "ts_dawn" = maptools::crepuscule(temp_pos,
-                                     as.POSIXct(animal_minutes[,unique(date)]),
+                                     as.POSIXct(animal_minutes[,unique(date),]),
                                      solarDep=c(dawn_degree),
                                      direction="dawn", POSIXct.out=TRUE)$time,
     "ts_sr" = maptools::crepuscule(temp_pos,
-                                   as.POSIXct(animal_minutes[,unique(date)]),
+                                   as.POSIXct(animal_minutes[,unique(date),]),
                                    solarDep=c(0),
                                    direction="dawn",
                                    POSIXct.out=TRUE)$time,
     "ts_ss" = maptools::crepuscule(temp_pos,
-                                   as.POSIXct(animal_minutes[,unique(date)]),
+                                   as.POSIXct(animal_minutes[,unique(date),]),
                                    solarDep=c(0),
                                    direction="dusk", POSIXct.out=TRUE)$time,
     "ts_dusk" = maptools::crepuscule(temp_pos,
-                                     as.POSIXct(animal_minutes[,unique(date)]),
+                                     as.POSIXct(animal_minutes[,unique(date),]),
                                      solarDep=c(dawn_degree),
                                      direction="dusk", POSIXct.out=TRUE)$time,
     "ts_dawn_plusone" =
       maptools::crepuscule(temp_pos,
-                           as.POSIXct(animal_minutes[,unique(date)]) +
+                           as.POSIXct(animal_minutes[,unique(date),]) +
                              lubridate::days(1),
                            solarDep=c(dawn_degree),
                            direction="dawn", POSIXct.out=TRUE)$time,
     "ts_sr_plusone" =
       maptools::crepuscule(temp_pos,
-                           as.POSIXct(animal_minutes[,unique(date)]) +
+                           as.POSIXct(animal_minutes[,unique(date),]) +
                              lubridate::days(1),
                            solarDep=c(0),
                            direction="dawn", POSIXct.out=TRUE)$time)
   nighttime[,date_dawn := as.Date(ts_dawn)]
   nighttime[,date_sr := as.Date(ts_sr)]
+
+# Check for days when the sun did not set below dawn_degree. These days will be 
+# removed from the table. 
+  if (nighttime[(is.na(ts_dawn) | is.na(ts_dawn_plusone)), .N,] > 0) {
+      days_with_no_night <- animal_minutes[,unique(date),][
+                              nighttime[,(is.na(ts_dawn) | is.na(ts_dawn_plusone)),]]
+    print(paste("!!! The deployment period of this animals covers days at which the sun did not set below 'dawn_degree'. The following days were removed from the table:", paste(days_with_no_night, collapse  = ", "), sep = " "))
+    animal_minutes <- animal_minutes[!(date %in% days_with_no_night),,]
+    nighttime <- nighttime[!(is.na(ts_dawn) | is.na(ts_dawn_plusone)),,]
+  }
 
   if (dayshift == "sunrise") {
   setkey(nighttime, ts_sr, ts_sr_plusone)
