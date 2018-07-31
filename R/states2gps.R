@@ -43,11 +43,11 @@ states2gps <- function(active_states,
         active := 0,]
   }
 
-  if (!is.null(activity_data_gaps) && nrow(activity_data_gaps)!=0) {
-    for (j in 1:nrow(activity_data_gaps)) {
-      gps[animal_tag == activity_data_gaps[i, animal_tag,] &
-            ts >= activity_data_gaps[i, to_NA,] &
-            ts <= activity_data_gaps[i, end_NA,],
+  if (!is.null(activity_gaps) && nrow(activity_gaps)!=0) {
+    for (j in 1:nrow(activity_gaps)) {
+      gps[animal_tag == activity_gaps[i, animal_tag,] &
+            ts >= activity_gaps[i, to_NA,] &
+            ts <= activity_gaps[i, end_NA,],
           active := NA, ]
     }
   }
