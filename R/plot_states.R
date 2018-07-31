@@ -3,12 +3,8 @@
 #' \code{plot_states} plots the active states and proportion of time in state
 #'   active for each animal.
 #'
-#' @param active_states A data.table with the active states (return of function
-#'  \code{\link{thresholds2states}}).
-#' @param prop_time_active A data.table with the proportion of time in state
-#'   active (return of \code{\link{states2prop_time_active}})
-#' @param gps A data.table with the GPS-positions of the animals.
-#'
+#' @param states An object of class \code{states}.
+#' @param threshold Type of thresholds. Must be on of \code{"a"}, \code{"b"}, \code{"c"}.
 #' @examples
 #' plot_states(active_states = active_states_a,
 #'             prop_time_active = prop_time_active,
@@ -17,9 +13,39 @@
 #' @import data.table
 #' @export
 
-plot_states <- function(active_states,
-                        prop_time_active,
-                        gps = NULL){
+plot_states <- function(states,
+                        threshold){
+
+  # Type Check
+  if(!is(states, "states")){
+    stop("Please provide an object of class 'states'")
+  }
+  # Input checks
+  if(length(threshold) != 1){
+    stop("Please provide only one threshold.")
+  }
+  if(!threshold %in% c("a", "b", "c")){
+    stop("Threshold must be either 'a', 'b' or 'c'")
+  }
+
+  # Extract data for threshold
+  th <- paste0("threshold_", threshold)
+  x <- states[[which(names(states) == th)]]
+
+  active_states <- x$active_states
+  prop_time_active <- x$prop_time_active
+  if(all(is.na(x$gps_active))){
+    gps <- NULL
+  } else {
+    gps <- x$gps_active
+  }
+
+  if(all(is.na(active_states))){
+    stop("No active states found for this threshold.")
+  }
+  if(all(is.na(prop_time_active))){
+    stop("Proportional time active is missing for this threshold.")
+  }
 
   oldpar <- par(no.readonly=TRUE)
   on.exit(par(oldpar))
