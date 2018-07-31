@@ -1,13 +1,14 @@
-#' Identify data gaps in the activity data
+#' Identify gaps in the activity data
 #'
-#' \code{identify_activity_gaps} searches for data gaps in the activity data.
+#' \code{identify_activity_gaps} searches for data gaps in the
+#'   \code{$activity_data} of an \code{activity} object, then stores the gaps
+#'   in the object as \code{$activity_gaps}
 #'
-#' @param activity A data.table with the activity data. The following columns
-#'   should be present: 'animal_tag', 'ts' and the activity variable that is
-#'   scanned for gaps (e.g. 'act_x').
+#' @param activity An object of class \code{activity}.
 #' @param axis The activity variable to scan for gaps.
-#' @return  A data.table with the start- and end-timestamps of the identified
-#'   gaps.
+#' @return  An object of class \code{activity} containing \code{$activity_gaps}
+#'   in which the start- and end-timestamps of the identified gaps are
+#'   specified.
 #' @examples
 #' activity_data_gaps <- identify_activity_gaps(activity = activity_data,
 #'                                              axis = 'act_xy')
@@ -15,10 +16,27 @@
 #' @export
 
 identify_activity_gaps <- function(activity,
-                                   axis) {
+                                   act.axis = NULL) {
+  # Type check
+  if(!is(activity, "activity")){
+    stop("Please provide an object of class 'activity'")
+  }
+
+  # Change in activity object those parameters that have been provided through
+  # function call
+  pars <- as.list(match.call())
+  activity <- set_parameters(x = activity, parameters = pars)
+
+  # Extract parameters from activity object
+  parameters <- get_parameters(x = activity,
+                               parameters = c("act.axis"))
+  axis <- parameters$act.axis
+
+  # Get activity data from activity object
+  activity_data <- activity$activity_data
 
   activity_gaps <-
-    activity[,.(to_NA = ts[which(diff(is.na(c(1,get(axis),1))) == 1)],
+    activity_data[,.(to_NA = ts[which(diff(is.na(c(1,get(axis),1))) == 1)],
                      end_NA = ts[which(diff(is.na(c(1,get(axis),1))) == -1)-1]),
                   by = animal_tag]
   if (nrow(activity_gaps) > 0) {
@@ -29,5 +47,8 @@ identify_activity_gaps <- function(activity,
   } else {
     activity_gaps[, animal_id := as.integer(),][, tag_code := as.character()]
   }
-  return(activity_gaps)
+
+  activity$activity_gaps <- activity_gaps
+
+  return(activity)
 }
