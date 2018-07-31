@@ -61,12 +61,14 @@ states2prop_time_active <- function(active_states,
                        "median_latitude" = median(as.numeric(latitude))),
                      by = animal_tag]
     missing_gps <- hr_center[!(animal_tag %in% animal_tags) , animal_tag, ]
-    if ((length(missing_gps) > 0) & (!is.null(pos))) {
-      hr_center <- rbind(hr_center, data.frame(missing_gps, pos[1], pos[2]))
-    } else {
-      stop(paste('GPS positions for animal_tag: ',
-                 paste(missing_gps, collapse = ", "), ' are missing. Please provide the coordinates of the research area (parameter \'pos\') !'))
+    if (length(missing_gps) > 0) {
+      if (!is.null(pos)) {
+        hr_center <- rbind(hr_center, data.frame(missing_gps, pos[1], pos[2]))
+      } else {
+        stop(paste('GPS positions for animal_tag: ',
+                   paste(missing_gps, collapse = ", "), ' are missing. Please provide the coordinates of the research area (parameter \'pos\') !'))
       }
+    }
   } else if (all(is.na(pos))) {
     stop('You have to provide either a table with the GPS-positions
          or coordinates of the research area!')
@@ -74,7 +76,6 @@ states2prop_time_active <- function(active_states,
     hr_center <- data.frame("animal_tag" = animal_tags,
                             "median_longitude" = pos[1],
                             "median_latitude" = pos[2])}
-
 
 
 # if (!is.null(gps)) {
