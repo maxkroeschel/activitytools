@@ -110,41 +110,23 @@ deer_states2 <- states(activity = deer,
 
 ## Plotting
 # Plot thresholds and activity
-plot_thresholds(deer)
-plot_activity(deer, animal_id = 1)
-# These functions also work for 'states' objects if input data is kept
-plot_thresholds(deer_states)
-plot_activity(deer_states, animal_id = 1)
+# Thresholds
+plot(deer, select = "thresholds")
+#Activity
+plot(deer, animal_id = 1)
+plot(deer, animal_id = 1, select = "activity") # same
+
+# This also works for 'states' objects if input data was kept during creation
+plot(deer_states, select = "thresholds")
+plot(deer, animal_id = 1, select = "activity")
 
 # Plot active states
-plot_states(deer_states, threshold = "b")
+plot(deer_states, threshold = "b")
+plot(deer_states, threshold = "b", select = "states") # same
 
 # Export classified GPS data
 write.table(deer_states$threshold_a$gps_active, file = "./test/gps_data_export.csv",
             sep  = ";", row.names = FALSE)
-
-
-# same using function arguments
-deer_states2 <- states(activity = deer,
-                       thresholds = c("a", "c"),
-                       states.dayshift = "sunrise",
-                       states.dawn_degree = 11,
-                       states.period = "week",
-                       states.max_na = 210)
-
-deer_states2 <- states(activity = deer,
-                       parameters = pars,
-                       thresholds = c("a", "c"),
-                       states.dayshift = "sunrise",
-                       states.dawn_degree = 11,
-                       states.period = "week",
-                       states.max_na = 210)
-
-
-
-## Other
-deer$gps_data
-deer <- add_gps_data(deer, gps_data)
 
 
 ## Workflow 2 - parameters step by step ----
