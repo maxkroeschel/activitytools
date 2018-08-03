@@ -27,5 +27,11 @@ set_parameters <- function(x,
       x$parameters[ind_ap] <- parameters[ind_sp]
     }
   }
+
+  for(i in 1:length(x$parameters)){
+    if(is.null(x$parameters[[i]])){
+      x$parameters[[i]] <- NA
+    }
+  }
   return(x)
 }
