@@ -15,13 +15,16 @@
 plot.activity <- function(x,
                           select = "activity",
                           ...){
-  if(!select %in% c("activity", "thresholds")){
-    stop("The 'select' argument must be either 'activity' or 'thresholds'.")
+  if(!select %in% c("activity", "thresholds", 'states')){
+    stop("The 'select' argument must be either 'activity', 'thresholds', or 'states'.")
   }
   if(select == "activity"){
     plot_activity(x, ...)
   }
   if(select == "thresholds"){
     plot_thresholds(x, ...)
+  }
+  if(select == "states"){
+    plot_states(x, ...)
   }
 }

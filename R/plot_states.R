@@ -3,8 +3,8 @@
 #' \code{plot_states} plots the active states and proportion of time in state
 #'   active for each animal.
 #'
-#' @param states An object of class \code{states}.
-#' @param threshold Type of thresholds. Must be on of \code{"a"}, \code{"b"}, \code{"c"}.
+#' @param states An object of class \code{activity}.
+#' @param threshold Type of thresholds. Must be one of \code{"a"}, \code{"b"}, \code{"c"}.
 #' @examples
 #' plot_states(active_states = active_states_a,
 #'             prop_time_active = prop_time_active,
@@ -13,12 +13,12 @@
 #' @import data.table
 #' @export
 
-plot_states <- function(states,
+plot_states <- function(activity,
                         threshold){
 
   # Type Check
-  if(!is(states, "states")){
-    stop("Please provide an object of class 'states'")
+  if(!is(activity, "activity")){
+    stop("Please provide an object of class 'activity'")
   }
   # Input checks
   if(length(threshold) != 1){
@@ -29,8 +29,8 @@ plot_states <- function(states,
   }
 
   # Extract data for threshold
-  th <- paste0("threshold_", threshold)
-  x <- states[[which(names(states) == th)]]
+  th <- paste0("states_", threshold)
+  x <- activity[[which(names(activity) == th)]]
 
   active_states <- x$active_states
   prop_time_active <- x$prop_time_active

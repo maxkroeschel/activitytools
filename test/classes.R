@@ -71,19 +71,21 @@ pars <- list(act.axis = "act_xy",
 deer <- activity(activity_data = activity_data, gps_data = gps_data, parameters = pars)
 
 # Regularize
-deer$activity_data[,.(min = min(diff(ts)),
-                 max = max(diff(ts)),
-                 mean = mean(diff(ts))),
-              by = animal_tag]
+# deer$activity_data[,.(min = min(diff(ts)),
+#                  max = max(diff(ts)),
+#                  mean = mean(diff(ts))),
+#               by = animal_tag]
 
 deer <- regularize_activity(deer)
-deer$activity_data[,.(min = min(diff(ts)),
-                      max = max(diff(ts)),
-                      mean = mean(diff(ts))),
-                   by = animal_tag]
+
+# deer$activity_data[,.(min = min(diff(ts)),
+#                       max = max(diff(ts)),
+#                       mean = mean(diff(ts))),
+#                    by = animal_tag]
 
 # Combine activity_data from x- and y-axis: Already performed when creating
 # activity obect; updated after regularization
+deer[["active_states"]]
 
 # Smooth activity
 deer <- smooth_activity(deer)
@@ -94,19 +96,19 @@ deer <- remove_activity_gaps(deer)
 
 # Thresholds
 # deer <- calculate_thresholds(deer, plot_summary = TRUE)
-# Resulting 'deer' object:
+# Load resulting 'deer' object:
 data("thresholds")
 
 # Activity states (using parameter list defined above)
-deer_states <- states(deer, parameters = pars)
+deer <- calculate_states(deer)
 
 # States again with different parameters
-deer_states2 <- states(activity = deer,
-                       thresholds = c("a", "c"),
-                       parameters = list(states.dayshift = "sunrise",
-                                         states.dawn_degree = 11,
-                                         states.period = "week",
-                                         states.max_na = 210))
+deer2 <- states(activity = deer,
+                thresholds = c("a", "c"),
+                parameters = list(states.dayshift = "sunrise",
+                                  states.dawn_degree = 11,
+                                  states.period = "week",
+                                  states.max_na = 210))
 
 ## Plotting
 # Plot thresholds and activity
@@ -114,15 +116,9 @@ deer_states2 <- states(activity = deer,
 plot(deer, select = "thresholds")
 #Activity
 plot(deer, animal_id = 1)
-plot(deer, animal_id = 1, select = "activity") # same
-
-# This also works for 'states' objects if input data was kept during creation
-plot(deer_states, select = "thresholds")
-plot(deer, animal_id = 1, select = "activity")
-
-# Plot active states
-plot(deer_states, threshold = "b")
-plot(deer_states, threshold = "b", select = "states") # same
+plot(deer, select = "activity", animal_id = 1) # same
+# Active states
+plot(deer, select="states", threshold = "b")
 
 # Export classified GPS data
 write.table(deer_states$threshold_a$gps_active, file = "./test/gps_data_export.csv",
@@ -162,31 +158,39 @@ deer <- identify_activity_gaps(deer,
 deer <- remove_activity_gaps(deer)
 
 # Thresholds -- includes aggregation
-# deer <- calculate_thresholds(activity = deer,
-#                               thresh.n_runs = 1,
-#                               thresh.window_width_around_day = 3,
-#                               thresh.n_thresholds = c(25:35),
-#                               thresh.min_bin_width = 1,
-#                               thresh.min_duration_active_state = 10,
-#                               plot_summary = TRUE)
+deer <- calculate_thresholds(activity = deer,
+                              thresh.n_runs = 1,
+                              thresh.window_width_around_day = 3,
+                              thresh.n_thresholds = c(25:35),
+                              thresh.min_bin_width = 1,
+                              thresh.min_duration_active_state = 10,
+                              plot_summary = TRUE)
 data("thresholds")
 
 # Activity states
-deer_states <- states(deer,
-                      thresholds = c("a", "b", "c"),
-                      states.dayshift = "dawn",
-                      states.dawn_degree = 12,
-                      states.period = "day",
-                      states.max_na = 30)
+deer_states <- calculate_states(deer,
+                                thresholds = c("a", "b", "c"),
+                                states.dayshift = "dawn",
+                                states.dawn_degree = 12,
+                                states.period = "day",
+                                states.max_na = 30)
 
 # using different parameters
-deer_states2 <- states(activity = deer,
-                       thresholds = c("a", "c"),
-                       states.dayshift = "sunrise",
-                       states.dawn_degree = 11,
-                       states.period = "week",
-                       states.max_na = 210)
+deer_states2 <- calculate_states(activity = deer,
+                                 thresholds = c("a", "c"),
+                                 states.dayshift = "sunrise",
+                                 states.dawn_degree = 11,
+                                 states.period = "week",
+                                 states.max_na = 210)
 
+# Plotting same as above
+# Thresholds
+plot(deer, select = "thresholds")
+#Activity
+plot(deer, animal_id = 1)
+plot(deer, select = "activity", animal_id = 1) # same
+# Active states
+plot(deer, select="states", threshold = "b")
 
 # GPS data ----
 
@@ -194,42 +198,3 @@ deer_states2 <- states(activity = deer,
 
 deer <- add_gps_data(deer, gps_data)
 deer_states <- add_gps_data(deer_states, gps_data)
-
-
-# More notes on usage ----
-
-# In creating a states object, the parameter list and the function arguments can
-# be mixed. In this case, function arguments always override the parameter list
-# (as well as the parameters already stored in the activity or states object).
-
-deer_states2 <- states(activity = deer,
-                       thresholds = c("a", "c"),
-                       parameters = list(states.dayshift = "dawn",
-                                         states.dawn_degree = 12,
-                                         states.period = "day",
-                                         states.max_na = 30),
-                       states.dayshift = "sunrise",
-                       states.dawn_degree = 11,
-                       states.period = "week",
-                       states.max_na = 210)
-deer_states2$parameters
-deer_states2 <- states(activity = deer,
-                       thresholds = c("a", "c"),
-                       parameters = list(states.dayshift = "dawn",
-                                         states.dawn_degree = 12,
-                                         states.period = "day",
-                                         states.max_na = 30),
-                       states.dayshift = "sunrise",
-                       states.dawn_degree = 11,
-                       states.period = "week",
-                       states.max_na = 210)
-
-# This does not keep input data in the states object:
-deer_states3 <- states(activity = deer,
-                       thresholds = c("a", "b", "c"),
-                       parameters = list(states.dayshift = "dawn",
-                                         states.dawn_degree = 12,
-                                         states.period = "day",
-                                         states.max_na = 30),
-                       keep_input = FALSE)
-

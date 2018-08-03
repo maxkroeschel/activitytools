@@ -49,7 +49,17 @@ activity <- function(activity_data,
                    activity_gaps = NA,
                    activity_thresholds_raw = NA,
                    activity_thresholds_aggregated = NA,
+                   states_a = list(active_states = NA,
+                                   prop_time_active = NA,
+                                   gps_active = NA),
+                   states_b = list(active_states = NA,
+                                   prop_time_active = NA,
+                                   gps_active = NA),
+                   states_c = list(active_states = NA,
+                                   prop_time_active = NA,
+                                   gps_active = NA),
                    gps_data = NA)
+
   activity$parameters <- list(act.axis = NA,
                               reg.minutes = NA,
                               smooth.width_ma = NA,
@@ -57,7 +67,12 @@ activity <- function(activity_data,
                               thresh.window_width_around_day = NA,
                               thresh.n_thresholds = NA,
                               thresh.min_bin_width = NA,
-                              thresh.min_duration_active_state = NA)
+                              thresh.min_duration_active_state = NA,
+                              states.pos = NA,
+                              states.dayshift = NA,
+                              states.dawn_degree = NA,
+                              states.period = NA,
+                              states.max_na = NA)
 
 
   # set class to "activity"
