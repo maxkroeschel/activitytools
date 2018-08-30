@@ -58,13 +58,10 @@ regularize_activity <- function(activity,
                                        by = animal_tag], animal_tag, V1)]
   activity_data <- split_animaltag(activity_data)
   activity_data[, act_xy := act_x + act_y]
-  setcolorder(activity_data, c("animal_tag",
-                               "animal_id",
-                               "tag_code",
-                               "act_x",
-                               "act_y",
-                               "act_xy",
-                               "ts"))
+  col_req <-  c("animal_tag", "animal_id", "tag_code", "act_x", "act_y",
+                "act_xy", "ts")
+  col_oth <- names(activity_data)[!names(activity_data) %in% col_req]
+  setcolorder(activity_data, c(col_req, col_oth))
   activity$activity_data <- activity_data[order(animal_tag, ts)]
   return(activity)
 }

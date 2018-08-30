@@ -90,13 +90,16 @@ activity <- function(activity_data,
   activity_data <- data.table(activity_data)
   activity_data <- create_animaltag(activity_data)
   activity_data[, act_xy := act_x + act_y]
-  setcolorder(activity_data, c("animal_tag",
-                               "animal_id",
-                               "tag_code",
-                               "act_x",
-                               "act_y",
-                               "act_xy",
-                               "ts"))
+  col_req <-  c("animal_tag",
+                "animal_id",
+                "tag_code",
+                "act_x",
+                "act_y",
+                "act_xy",
+                "ts")
+  col_oth <- names(activity_data)[!names(activity_data) %in% col_req]
+  setcolorder(activity_data, c(col_req, col_oth))
+
   activity$activity_data <- activity_data
   if(!is.null(gps_data)){
     gps_data <- data.table(gps_data)[order(animal_id, ts),,]
