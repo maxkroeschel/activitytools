@@ -21,7 +21,7 @@
 #' @param period Either "day" or "week", specifies the period of time in which the
 #'   proportion of time in state active is aggregated.
 #' @param max_na An integer with the maximum number of minutes with NA
-#'   that are alloes for each period. When this threshold is crossed proportion of
+#'   that are allowed for each period. When this threshold is crossed proportion of
 #'   time in state active will be set to NA for this period.
 #' @return A data.table with the proportion of time in state active for each
 #'   animal_tag and day. The proportion of time in state active is returned for
