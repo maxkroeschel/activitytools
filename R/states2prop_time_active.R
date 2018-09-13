@@ -21,7 +21,7 @@
 #' @param period Either "day" or "week", specifies the period of time in which the
 #'   proportion of time in state active is aggregated.
 #' @param max_na An integer with the maximum number of minutes with NA
-#'   that are alloes for each period. When this threshold is crossed proportion of
+#'   that are allowed for each period. When this threshold is crossed proportion of
 #'   time in state active will be set to NA for this period.
 #' @return A data.table with the proportion of time in state active for each
 #'   animal_tag and day. The proportion of time in state active is returned for
@@ -60,13 +60,19 @@ states2prop_time_active <- function(active_states,
                      .("median_longitude" = median(as.numeric(longitude)),
                        "median_latitude" = median(as.numeric(latitude))),
                      by = animal_tag]
-    missing_gps <- hr_center[!(animal_tag %in% animal_tags) , animal_tag, ]
-    if ((length(missing_gps) > 0) & (!is.null(pos))) {
-      hr_center <- rbind(hr_center, data.frame(missing_gps, pos[1], pos[2]))
-    } else {
-      stop(paste('GPS positions for animal_tag: ',
-                 paste(missing_gps, collapse = ", "), ' are missing. Please provide the coordinates of the research area (parameter \'pos\') !'))
+    missing_gps <- animal_tags[! animal_tags %in% hr_center[, unique(animal_tag), ]]
+    if (length(missing_gps) > 0) {
+      if (!is.null(pos)) {
+        hr_center <- rbind(hr_center,
+                           data.frame(as.character(missing_gps),
+                                      as.numeric(pos[1]),
+                                      as.numeric(pos[2])),
+                           use.names = FALSE)
+      } else {
+        stop(paste('GPS positions for animal_tag: ',
+                   paste(missing_gps, collapse = ", "), ' are missing. Please provide the coordinates of the research area (parameter \'pos\') !'))
       }
+    }
   } else if (all(is.na(pos))) {
     stop('You have to provide either a table with the GPS-positions
          or coordinates of the research area!')
@@ -74,7 +80,6 @@ states2prop_time_active <- function(active_states,
     hr_center <- data.frame("animal_tag" = animal_tags,
                             "median_longitude" = pos[1],
                             "median_latitude" = pos[2])}
-
 
 
 # if (!is.null(gps)) {

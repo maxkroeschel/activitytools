@@ -13,7 +13,7 @@
 #' @param n_thresholds a
 #' @param min_bin_width a
 #' @param min_duration_active_state a
-#' @param plot summary
+#' @param plot_summary
 #'
 #' @return Data.table with the ...
 #' @examples
