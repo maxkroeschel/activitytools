@@ -1,11 +1,14 @@
 library(devtools)
-load_all("~/projects/activitytools")
+load_all("./")
 Sys.setenv(TZ='UTC')
 
 # Test activity class ----
 data(activity_data)
 data(gps_data)
-pars <- list(axis = "act_xy",
+
+activity_data$act_xy <- activity_data$act_x + activity_data$act_y
+
+pars <- list(act.axis = "act_xy",
              reg.minutes = 5,
              smooth.width_ma = 2,
              tresh.n_runs = 1,

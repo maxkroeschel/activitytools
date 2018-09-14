@@ -18,23 +18,31 @@ activity <- function(activity_data,
                      keep_source = TRUE){
 
   # Input checks for activity data
-  act_columns <- c("animal_id", "tag_code", "act_x", "act_y", "ts")
-  check_act <- act_columns %in% names(activity_data)
-  if (!all(check_act)){
-    stop("The activity dataset is missing the following columns: ", paste(act_columns[!check_act], collapse = ", "))
+  available_activity_axes <- names(activity_data)[grepl(pattern =  'act',
+                                                        names(activity_data))]
+
+  # search for columns with activity data
+  if (length(available_activity_axes) == 0){
+    stop("You have to provide at least one column with activity data. The column name has to start with \"act\"!")
+  }
+  # check if necessary columns are present
+  necessary_act_columns <- c("animal_id", "tag_code", "ts")
+  check_col <- necessary_act_columns %in% names(activity_data)
+  if (!all(check_col)){
+    stop("The activity dataset is missing the following columns: ",
+         paste(necessary_act_columns[!check_col], collapse = ", "))
   }
   # if timestamp is not POSIXct, convert and assume UTC
   if(!is(activity_data$ts, "POSIXct")){
     activity_data$ts <- as.POSIXct(activity_data$ts, tz="UTC")
   }
-  # More checks / conversions?
 
   # Input checks for gps data
   if(!is.null(gps_data)){
-    gps_columns <- c("animal_id", "tag_code", "longitude", "latitude", "ts")
-    check_gps <- gps_columns %in% names(gps_data)
+    necessary_gps_columns <- c("animal_id", "tag_code", "longitude", "latitude", "ts")
+    check_gps <- necessary_act_columns %in% names(gps_data)
     if(!all(check_gps)){
-      stop("The GPS data are missing the following columns: ", paste(gps_columns[!check_gps], collapse = ", "))
+      stop("The GPS data are missing the following columns: ", paste(necessary_act_columns[!check_gps], collapse = ", "))
     }
     # if timestamp is not POSIXct, convert and assume UTC
     if(!is(activity_data$ts, "POSIXct")){
@@ -60,7 +68,8 @@ activity <- function(activity_data,
                                    gps_active = NA),
                    gps_data = NA)
 
-  activity$parameters <- list(act.axis = NA,
+  activity$parameters <- list(act.available_axes = NA,
+                              act.axis = NA,
                               reg.minutes = NA,
                               smooth.width_ma = NA,
                               thresh.n_runs = NA,
@@ -74,7 +83,7 @@ activity <- function(activity_data,
                               states.period = NA,
                               states.max_na = NA)
 
-
+  activity$parameters$act.available_axes <- available_activity_axes
   # set class to "activity"
   activity <- structure(activity, class = "activity")
 
@@ -89,14 +98,12 @@ activity <- function(activity_data,
   }
   activity_data <- data.table(activity_data)
   activity_data <- create_animaltag(activity_data)
-  activity_data[, act_xy := act_x + act_y]
+
   col_req <-  c("animal_tag",
                 "animal_id",
                 "tag_code",
-                "act_x",
-                "act_y",
-                "act_xy",
-                "ts")
+                "ts",
+                available_activity_axes)
   col_oth <- names(activity_data)[!names(activity_data) %in% col_req]
   setcolorder(activity_data, c(col_req, col_oth))
 
