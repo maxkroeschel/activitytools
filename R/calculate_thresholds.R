@@ -34,7 +34,7 @@ calculate_thresholds <- function(activity,
     stop("Please provide an object of class 'activity'")
   }
   # Input check
-  if(all(is.na(activity$activity_gaps))){
+  if(length(activity$activity_gaps)){
     stop("No activity gaps identified. Use 'identify_activity_gaps()' to identify data gaps first.")
   }
 
@@ -65,12 +65,12 @@ calculate_thresholds <- function(activity,
   # Calculate thresholds
   activity_thresholds_raw <-
     activity2thresholds(activity = activity_data,
-                                   activity_gaps = activity$data_gaps,
-                                   axis = parameters$axis,
-                                   axis_ma = parameters$axis_ma,
-                                   n_runs = parameters$thresh.n_runs,
-                                   window_width_around_day = parameters$thresh.window_width_around_day,
-                                   n_thresholds = parameters$thresh.n_thresholds,
+                        activity_gaps = activity$data_gaps,
+                        axis = parameters$axis,
+                        axis_ma = parameters$axis_ma,
+                        n_runs = parameters$thresh.n_runs,
+                        window_width_around_day = parameters$thresh.window_width_around_day,
+                        n_thresholds = parameters$thresh.n_thresholds,
                                    min_bin_width = parameters$thresh.min_bin_width,
                                    min_duration_active_state = parameters$thresh.min_duration_active_state,
                                    plot_summary = plot_summary)

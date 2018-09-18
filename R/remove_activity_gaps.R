@@ -21,7 +21,7 @@ remove_activity_gaps <- function(activity,
     stop("Please provide an object of class 'activity'")
   }
   # Input check
-  if(all(is.na(activity$activity_gaps))){
+  if(length(activity$activity_gaps) == 1){
     stop("No activity gaps identified. Use 'identify_activity_gaps()' to identify data gaps first.")
   }
 
