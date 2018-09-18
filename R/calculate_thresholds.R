@@ -66,7 +66,7 @@ calculate_thresholds <- function(activity,
   activity_thresholds_raw <-
     activity2thresholds(activity = activity_data,
                         activity_gaps = activity$data_gaps,
-                        axis = parameters$axis,
+                        axis = parameters$act.axis,
                         axis_ma = parameters$axis_ma,
                         n_runs = parameters$thresh.n_runs,
                         window_width_around_day = parameters$thresh.window_width_around_day,
