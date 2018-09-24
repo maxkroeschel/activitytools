@@ -16,7 +16,7 @@
 #' @export
 
 identify_activity_gaps <- function(activity,
-                                   act.axis = NULL) {
+                                   act.axis_ma = NULL) {
   # Type check
   if(!is(activity, "activity")){
     stop("Please provide an object of class 'activity'")
@@ -29,8 +29,8 @@ identify_activity_gaps <- function(activity,
 
   # Extract parameters from activity object
   parameters <- get_parameters(x = activity,
-                               parameters = c("act.axis"))
-  axis <- parameters$act.axis
+                               parameters = c("act.axis_ma"))
+  axis <- parameters$act.axis_ma
 
   # Get activity data from activity object
   activity_data <- activity$activity_data

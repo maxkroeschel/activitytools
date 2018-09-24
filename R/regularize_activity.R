@@ -14,7 +14,7 @@
 #'     }
 #'
 #' @param activity An object of class \code{activity}.
-#' @param reg.minutes The regular interval in minutes.
+#' @param act.reg_minutes The regular interval in minutes.
 #' @return The original activity object with regularized timestamps for its
 #'   \code{$acticity_data} in column 'ts'.
 #' @examples
@@ -24,7 +24,7 @@
 
 
 regularize_activity <- function(activity,
-                                reg.minutes = NULL) {
+                                act.reg_minutes = NULL) {
   # Type check
   if(!is(activity, "activity")){
     stop("Please provide an object of class 'activity'")
@@ -36,8 +36,8 @@ regularize_activity <- function(activity,
   activity <- set_parameters(x = activity, parameters = pars)
 
   # Extract parameters from activity object
-  parameters <- get_parameters(x = activity, parameters = "reg.minutes")
-  minutes <- parameters$reg.minutes
+  parameters <- get_parameters(x = activity, parameters = "act.reg_minutes")
+  minutes <- parameters$act.reg_minutes
 
   # Get activity data from activity object
   activity_data <- activity$activity_data
