@@ -15,7 +15,7 @@ pars <- list(act.axis_ma = "act_xy",
              thresh.window_width_around_day = 3,
              thresh.n_thresholds = c(25:35),
              thresh.min_bin_width = 1,
-             thresh.min_duration_active_state = 10)
+             states.min_duration_active_state = 10)
 # simple
 deer <- activity(activity_data = activity_data)
 # with GPS
@@ -64,12 +64,12 @@ pars <- list(act.axis_ma = "act_xy",
              thresh.window_width_around_day = 3,
              thresh.n_thresholds = c(25:35),
              thresh.min_bin_width = 1,
-             thresh.min_duration_active_state = 10,
-             states.pos = NULL,
-             states.dayshift = "dawn",
-             states.dawn_degree = 12,
-             states.period = "day",
-             states.max_na = 30)
+             states.min_duration_active_state = 10,
+             pta.pos = NULL,
+             pta.dayshift = "dawn",
+             pta.dawn_degree = 12,
+             pta.period = "day",
+             pta.max_na = 30)
 
 deer <- activity(activity_data = activity_data, gps_data = gps_data, parameters = pars)
 
@@ -108,10 +108,10 @@ deer <- calculate_states(deer)
 # States again with different parameters
 deer2 <- states(activity = deer,
                 thresholds = c("a", "c"),
-                parameters = list(states.dayshift = "sunrise",
-                                  states.dawn_degree = 11,
-                                  states.period = "week",
-                                  states.max_na = 210))
+                parameters = list(pta.dayshift = "sunrise",
+                                  pta.dawn_degree = 11,
+                                  pta.period = "week",
+                                  pta.max_na = 210))
 
 ## Plotting
 # Plot thresholds and activity
@@ -166,25 +166,25 @@ deer <- calculate_thresholds(activity = deer,
                               thresh.window_width_around_day = 3,
                               thresh.n_thresholds = c(25:35),
                               thresh.min_bin_width = 1,
-                              thresh.min_duration_active_state = 10,
+                              states.min_duration_active_state = 10,
                               plot_summary = TRUE)
 data("thresholds")
 
 # Activity states
 deer_states <- calculate_states(deer,
                                 thresholds = c("a", "b", "c"),
-                                states.dayshift = "dawn",
-                                states.dawn_degree = 12,
-                                states.period = "day",
-                                states.max_na = 30)
+                                pta.dayshift = "dawn",
+                                pta.dawn_degree = 12,
+                                pta.period = "day",
+                                pta.max_na = 30)
 
 # using different parameters
 deer_states2 <- calculate_states(activity = deer,
                                  thresholds = c("a", "c"),
-                                 states.dayshift = "sunrise",
-                                 states.dawn_degree = 11,
-                                 states.period = "week",
-                                 states.max_na = 210)
+                                 pta.dayshift = "sunrise",
+                                 pta.dawn_degree = 11,
+                                 pta.period = "week",
+                                 pta.max_na = 210)
 
 # Plotting same as above
 # Thresholds

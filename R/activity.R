@@ -76,12 +76,12 @@ activity <- function(activity_data,
                               thresh.window_width_around_day = NA,
                               thresh.n_thresholds = NA,
                               thresh.min_bin_width = NA,
-                              thresh.min_duration_active_state = NA,
-                              states.pos = NA,
-                              states.dayshift = NA,
-                              states.dawn_degree = NA,
-                              states.period = NA,
-                              states.max_na = NA)
+                              states.min_duration_active_state = NA,
+                              pta.pos = NA,
+                              pta.dayshift = NA,
+                              pta.dawn_degree = NA,
+                              pta.period = NA,
+                              pta.max_na = NA)
 
   activity$parameters$act.available_axes <- available_activity_axes
   # set class to "activity"

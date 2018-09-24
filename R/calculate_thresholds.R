@@ -12,7 +12,7 @@
 #' @param thresh.window_width_around_day
 #' @param thresh.n_thresholds
 #' @param thresh.min_bin_width
-#' @param thresh.min_duration_active_state
+#' @param states.min_duration_active_state
 #' @param plot_summary
 #' @return  An object of class \code{activity}.
 #' @examples
@@ -26,7 +26,7 @@ calculate_thresholds <- function(activity,
                                 thresh.window_width_around_day = NULL,
                                 thresh.n_thresholds = NULL,
                                 thresh.min_bin_width = NULL,
-                                thresh.min_duration_active_state = NULL,
+                                states.min_duration_active_state = NULL,
                                 plot_summary) {
 
   # Type check
@@ -55,7 +55,7 @@ calculate_thresholds <- function(activity,
                                               "thresh.window_width_around_day",
                                               "thresh.n_thresholds",
                                               "thresh.min_bin_width",
-                                              "thresh.min_duration_active_state"))
+                                              "states.min_duration_active_state"))
   parameters$axis_maw <- paste(parameters$act.axis_ma,"_ma", parameters$act.smooth_width_ma, sep = "")
 
   # Get activity data and gaps from activity object
@@ -72,7 +72,7 @@ calculate_thresholds <- function(activity,
                         window_width_around_day = parameters$thresh.window_width_around_day,
                         n_thresholds = parameters$thresh.n_thresholds,
                                    min_bin_width = parameters$thresh.min_bin_width,
-                                   min_duration_active_state = parameters$thresh.min_duration_active_state,
+                                   min_duration_active_state = parameters$states.min_duration_active_state,
                                    plot_summary = plot_summary)
 
   # Create period_id inside the tables activity_thresholds and activity_data
