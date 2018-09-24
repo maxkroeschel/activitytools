@@ -8,9 +8,9 @@ data(gps_data)
 
 activity_data$act_xy <- activity_data$act_x + activity_data$act_y
 
-pars <- list(act.axis = "act_xy",
-             reg.minutes = 5,
-             smooth.width_ma = 2,
+pars <- list(act.axis_ma = "act_xy",
+             act.reg_minutes = 5,
+             act.smooth_width_ma = 2,
              tresh.n_runs = 1,
              thresh.window_width_around_day = 3,
              thresh.n_thresholds = c(25:35),
@@ -57,9 +57,9 @@ data(activity_data)
 data(gps_data)
 
 # list of all parameters
-pars <- list(act.axis = "act_xy",
-             reg.minutes = 5,
-             smooth.width_ma = 2,
+pars <- list(act.axis_ma = "act_xy",
+             act.reg_minutes = 5,
+             act.smooth_width_ma = 2,
              thresh.n_runs = 1,
              thresh.window_width_around_day = 3,
              thresh.n_thresholds = c(25:35),
@@ -140,7 +140,7 @@ deer$activity_data[,.(min = min(diff(ts)),
                    by = animal_tag]
 
 deer <- regularize_activity(activity = deer,
-                            reg.minutes=5)
+                            act.reg_minutes=5)
 deer$activity_data[,.(min = min(diff(ts)),
                       max = max(diff(ts)),
                       mean = mean(diff(ts))),
@@ -151,13 +151,13 @@ deer$activity_data[,.(min = min(diff(ts)),
 
 # Smooth activity
 deer <- smooth_activity(activity = deer,
-                        act.axis = 'act_xy',
-                        smooth.width_ma = 2,
+                        act.axis_ma = 'act_xy',
+                        act.smooth_width_ma = 2,
                         update_NA = TRUE)
 
 # Identify and remove activity gaps
 deer <- identify_activity_gaps(deer,
-                               act.axis = 'act_xy')
+                               act.axis_ma = 'act_xy')
 deer <- remove_activity_gaps(deer)
 
 # Thresholds -- includes aggregation

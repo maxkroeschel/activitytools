@@ -69,9 +69,9 @@ activity <- function(activity_data,
                    gps_data = NA)
 
   activity$parameters <- list(act.available_axes = NA,
-                              act.axis = NA,
-                              reg.minutes = NA,
-                              smooth.width_ma = NA,
+                              act.axis_ma = NA,
+                              act.reg_minutes = NA,
+                              act.smooth_width_ma = NA,
                               thresh.n_runs = NA,
                               thresh.window_width_around_day = NA,
                               thresh.n_thresholds = NA,

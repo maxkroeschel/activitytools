@@ -49,14 +49,14 @@ calculate_thresholds <- function(activity,
 
   # Extract parameters from activity object
   parameters <- get_parameters(x = activity,
-                               parameters = c("act.axis",
-                                              "smooth.width_ma",
+                               parameters = c("act.axis_ma",
+                                              "act.smooth_width_ma",
                                               "thresh.n_runs",
                                               "thresh.window_width_around_day",
                                               "thresh.n_thresholds",
                                               "thresh.min_bin_width",
                                               "thresh.min_duration_active_state"))
-  parameters$axis_ma <- paste(parameters$act.axis,"_ma", parameters$smooth.width_ma, sep = "")
+  parameters$axis_maw <- paste(parameters$act.axis_ma,"_ma", parameters$act.smooth_width_ma, sep = "")
 
   # Get activity data and gaps from activity object
   activity_data <- activity$activity_data
@@ -66,8 +66,8 @@ calculate_thresholds <- function(activity,
   activity_thresholds_raw <-
     activity2thresholds(activity = activity_data,
                         activity_gaps = activity$data_gaps,
-                        axis = parameters$act.axis,
-                        axis_ma = parameters$axis_ma,
+                        axis = parameters$act.axis_ma,
+                        axis_ma = parameters$axis_maw,
                         n_runs = parameters$thresh.n_runs,
                         window_width_around_day = parameters$thresh.window_width_around_day,
                         n_thresholds = parameters$thresh.n_thresholds,

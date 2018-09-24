@@ -6,8 +6,8 @@
 #'   \code{width_axis_ma}.
 #'
 #' @param activity An object of class \code{activity}.
-#' @param act.axis
-#' @param smooth.width_ma
+#' @param act.axis_ma
+#' @param act.smooth_width_ma
 #' @param update_NA
 #' @return  An object of class \code{activity}.
 #' @examples
@@ -20,8 +20,8 @@
 
 
 smooth_activity <- function(activity,
-                            act.axis = NULL,
-                            smooth.width_ma = NULL,
+                            act.axis_ma = NULL,
+                            act.smooth_width_ma = NULL,
                             update_NA = TRUE) {
 
   # Type check
@@ -36,9 +36,9 @@ smooth_activity <- function(activity,
 
   # Extract parameters from activity object
   parameters <- get_parameters(x = activity,
-                               parameters = c("act.axis", "smooth.width_ma"))
-  axis <- parameters$act.axis
-  width_axis_ma <- parameters$smooth.width_ma
+                               parameters = c("act.axis_ma", "act.smooth_width_ma"))
+  axis <- parameters$act.axis_ma
+  width_axis_ma <- parameters$act.smooth_width_ma
 
   # Get activity data from activity object
   activity_data <- activity$activity_data
