@@ -99,7 +99,7 @@ prop_time_active <- states2prop_time_active(active_states = active_states_a,
                                             max_na_per_day = 30)
 
 plot_states(active_states = active_states_a,
-            prop_time_active = prop_time_active,
+            prop_time_active = prop_time_active_a,
             gps = gps_data)
 
 gps_data <- states2gps(gps = gps_data,
