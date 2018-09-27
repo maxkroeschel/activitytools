@@ -63,7 +63,7 @@ calculate_states <- function(activity,
         thresholds2states(activity = activity$activity_data,
                           activity_gaps = activity$activity_gaps,
                           thresholds = activity$activity_thresholds_aggregated,
-                          threshold_par = 'threshold_a')
+                          threshold_par = paste('threshold_', t, sep = ""))
       print(paste0("Proportional time active based on 'threshold ", t, "' ..."))
       activity[[states_t]]$prop_time_active <-
         states2prop_time_active(active_states = activity[[states_t]]$active_states,
