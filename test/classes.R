@@ -88,7 +88,7 @@ deer <- regularize_activity(deer)
 
 # Combine activity_data from x- and y-axis: Already performed when creating
 # activity obect; updated after regularization
-deer[["active_states"]]
+# deer[["active_states"]]
 
 # Smooth activity
 deer <- smooth_activity(deer)
@@ -98,9 +98,9 @@ deer <- identify_activity_gaps(deer)
 deer <- remove_activity_gaps(deer)
 
 # Thresholds
-# deer <- calculate_thresholds(deer, plot_summary = TRUE)
+deer <- calculate_thresholds(deer, plot_summary = TRUE)
 # Load resulting 'deer' object:
-data("thresholds")
+#data("thresholds")
 
 # Activity states (using parameter list defined above)
 deer <- calculate_states(deer)
@@ -121,7 +121,7 @@ plot(deer, select = "thresholds")
 plot(deer, animal_id = 1)
 plot(deer, select = "activity", animal_id = 1) # same
 # Active states
-plot(deer, select="states", threshold = "b")
+plot(deer, select="states", threshold = "a")
 
 # Export classified GPS data
 write.table(deer_states$threshold_a$gps_active, file = "./test/gps_data_export.csv",
