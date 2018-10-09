@@ -1,118 +1,78 @@
-# test-script for activity tools
+#
 ################################################################################
 
 Sys.setenv(TZ='UTC')
-library("activitytools")
+
+#library("activitytools")
+
+library(devtools)
+load_all("./")
 
 data(activity_data)
 data(gps_data)
 
-activity_data <- data.table(activity_data)[order(animal_id, ts),,]
-gps_data <- data.table(gps_data)[order(animal_id, ts),,]
-gps_data <- create_animaltag(gps_data)
+# create parameter that is used for state classification
+activity_data$act_xy <- activity_data$act_x + activity_data$act_y
 
-# activity_data <- activity_data[as.Date(ts) >= as.Date('2007-06-01') &
-#                                  as.Date(ts) < as.Date('2007-07-01'),, ]
+# define all parameter that are used for state detection
 
-activity_data <- create_animaltag(activity_data)
+pars <- list(act.axis = "act_xy",
+             act.reg_minutes = 5,
+             act.smooth_width_ma = 2,
+             thresh.n_runs = 1,
+             thresh.window_width_around_day = 3,
+             thresh.n_thresholds = c(25:35),
+             thresh.min_bin_width = 1,
+             states.min_duration_active = 10,
+             pta.pos = NULL,
+             pta.dayshift = "dawn",
+             pta.dawn_degree = 12,
+             pta.period = "day",
+             pta.max_na = 30)
 
-# regularize the activity data
-activity_data[,.(min = min(diff(ts)),
-                 max = max(diff(ts)),
-                 mean = mean(diff(ts))),
-              by = animal_tag]
+# create activity object
+  ## parameter can also be defined later
+deer <- activity(activity_data = activity_data, gps_data = gps_data, parameters = pars)
 
-activity_data <- regularize_activity(activity = activity_data,
-                                     minutes = 5)
+# activity data are often characterized by data gaps or duplicated data points
+  # deer$activity_data[,.(min = min(diff(ts)),
+  #                       max = max(diff(ts)),
+  #                       mean = mean(diff(ts))),
+  #                    by = animal_tag]
 
-activity_data[,.(min = min(diff(ts)),
-                 max = max(diff(ts)),
-                 mean = mean(diff(ts))),
-              by = animal_tag]
+# --> create a data set with equal time intervals between the activity data (regularize)
+#     the regular time interal is defined by the parameter 'act.reg_minutes'
 
-# combine activity_data from x- and y-axis
-activity_data[, act_xy := act_x + act_y]
+deer <- regularize_activity(deer)
 
-activity_data <- smooth_activity(activity = activity_data,
-                                 axis = 'act_xy',
-                                 width_axis_ma = 2,
-                                 update_NA = TRUE)
-
-# identify and store data gaps in the activity data
-activity_data_gaps <- identify_activity_gaps(activity = activity_data,
-                                             axis = 'act_xy')
-
-# remove data gaps
-activity_data <- remove_activity_gaps(activity = activity_data,
-                                      activity_gaps = activity_data_gaps)
-
-# restore columns animal_id and tag_code
-activity_data <- split_animaltag(data = activity_data)
-
-# calculate threshold values (this takes some time)
-activity_thresholds <-
-  data.table(activity2thresholds(activity = activity_data,
-                                 activity_gaps = activity_data_gaps,
-                                 axis = 'act_xy',
-                                 axis_ma = 'act_xy_ma2',
-                                 n_runs = 1,
-                                 window_width_around_day = 3,
-                                 n_thresholds = c(25:35),
-                                 min_bin_width = 1,
-                                 min_duration_active_state = 10,
-                                 plot_summary = TRUE))
-
-# create period_id inside the tables activity_thresholds and activity_data
-activity_thresholds[, threshold_period := ts2yearweek(day),]
-activity_data[,threshold_period := ts2yearweek(ts),]
-
-# aggregate activity thresholds
-activity_thresholds_final <-
-  aggregate_thresholds(thresholds = activity_thresholds)
-
-activity_thresholds_final <- split_animaltag(activity_thresholds_final)
-
-plot_thresholds(thresholds = activity_thresholds_final)
-
-plot_activity(activity = activity_data,
-              animal_id = "64",
-              gps = gps_data,
-              thresholds = activity_thresholds_final)
+  # deer$activity_data[,.(min = min(diff(ts)),
+  #                       max = max(diff(ts)),
+  #                       mean = mean(diff(ts))),
+  #                    by = animal_tag]
 
 
-# predict active states for each animal
-active_states_a <-  thresholds2states(activity = activity_data,
-                                      activity_gaps = activity_data_gaps,
-                                      thresholds = activity_thresholds_final,
-                                      threshold_par = 'threshold_a')
+# Smooth the activity axis with a moving average
+deer <- smooth_activity(deer)
 
-active_states_b <-  thresholds2states(activity = activity_data,
-                                      activity_gaps = activity_data_gaps,
-                                      thresholds = activity_thresholds_final,
-                                      threshold_par = 'threshold_b')
+# Identify gaps in the activity data
+deer <- identify_activity_gaps(deer)
+(deer$activity_gaps)
 
-prop_time_active <- states2prop_time_active(active_states = active_states_a,
-                                            activity_gaps = activity_data_gaps,
-                                            gps = gps_data,
-                                            dayshift = "dawn",
-                                            dawn_degree = 12,
-                                            max_na_per_day = 30)
+# Remove gaps in the activity data
+deer <- remove_activity_gaps(deer)
 
-plot_states(active_states = active_states_a,
-            prop_time_active = prop_time_active_a,
-            gps = gps_data)
+# Calculate thresholds (this might take some time !!!!!)
+deer <- calculate_thresholds(deer, plot_summary = TRUE)
 
-gps_data <- states2gps(gps = gps_data,
-                        active_states = active_states_a)
-gps_data <- daytime2gps(gps = tgps_data,
-                         dawn_degree = 12)
-gps_data[,date := as.Date(ts),]
-gps_data <- split_animaltag(gps_data)
-write.table(gps_data, file = "./test/gps_data_export.csv",
-          sep  = ";", row.names = FALSE)
+# Calculate states, the proportion of time in state active and assign each
+# GPS-position as active or resting (using parameter list defined above)
+deer <- calculate_states(deer)
 
-gps_data[, daytime := daytime2gps(long = longitude,
-                        lat = latitude,
-                        ts = ts,
-                        dawn_degree = 12,
-                        type = "daytime")]
+# plotting options
+# Thresholds
+plot(deer, select = "thresholds")
+# Activity data
+plot(deer, animal_id = 1)
+plot(deer, select = "activity", animal_id = 1) # same
+# Active states
+plot(deer, select="states", threshold = "a")
