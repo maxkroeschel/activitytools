@@ -215,26 +215,25 @@ do.call("rbind",
 # plot evaluation plots
 
         if (plot_summary == TRUE){
-
-          layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))
-
+          layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE))
+          par(mar = c(4.1,4.1,5.1,2.1))
           plot(density(i_activity[,get(axis_ma)], na.rm=T),
                xlab = axis_ma,
                main = paste("animal_tag: ", x_animal_tag, "  -  day: ", i_day, sep = ""),
-               lwd = 2, xlim = c(-50,500))
+               lwd = 2, xlim = c(-10,250))
           abline(v=threshold_seq, col = "black")
           abline(v=threshold_a, col = "blue", lty = 2)
           abline(v=threshold_b, col = "purple", lty = 2)
           abline(v=threshold_c, col = "green", lty = 2)
-#          abline(v=thresholtemp_d, col = "red", lty = 2)
           abline(h = 0)
-          text(x = 350, y = 0, adj = c(0,-1),
+          text(x = 170, y = 0, adj = c(0,-1),
                labels = paste('n_thresholds   = ', temp_n_thresholds,
                               '\nbin_width = ', temp_bin_width,
-                              '\nwarnings =  ', temp_warning, sep = ""))
+                              '\nwarnings =  ', temp_warning, sep = ""), col = "black")
 
+          par(mar = c(6.1,4.1,3.1,2.1))
           plot(prop_state_active$threshold, prop_state_active$firstdiff,
-               type = "h", xlab = "threshold", ylab = "first_diff",
+               type = "h", xlab = expression('thresholds (t'['i']*')'), ylab = "dPTA",
                xlim = c(0,150),ylim = c(0,0.3))
           points(threshold_a, a, col  = "blue")
           points(threshold_b, b, col  = "purple")
@@ -242,20 +241,7 @@ do.call("rbind",
           abline(h = a, col = "blue", lty = 2)
           abline(h = b, col = "purple", lty = 2)
           abline(h = c, col = "green", lty = 2)
-
-          if (length(prop_state_active[firstdiff < quantile(firstdiff)[4],firstdiff,]) >0){
-            plot(density(prop_state_active[firstdiff < quantile(firstdiff)[4],firstdiff,]),
-               xlim = range(prop_state_active$firstdiff), main = "")} else {
-              plot(density(prop_state_active[,firstdiff,]),
-                       xlim = range(prop_state_active$firstdiff), main = "") }
-          rug(prop_state_active$firstdiff, lwd = 2)
-          abline(v = a, col = "blue", lty= 2)
-          abline(v = b, col = "purple", lty= 2)
-          abline(v = c, col = "green", lty= 2)
-          curve(dnorm(x, mean=mean(prop_state_active[firstdiff < quantile(firstdiff)[4],firstdiff]),
-                      sd=sd(prop_state_active[firstdiff < quantile(firstdiff)[4],firstdiff])), col="grey", lwd=2, add=T)
-          # lines(density(prop_state_active[firstdiff < quantile(firstdiff)[4],firstdiff]))
-        # par(mfrow = c(1,1))
+          par(mar = c(5.1,4.1,4.1,2.1), mfrow = c(1,1))
           }
 
         return(data.table("animal_tag" = as.character(x_animal_tag),
