@@ -57,6 +57,10 @@ if (is.null(gps)) {
                         nrow = 1)
     }
 
+# workaround: copy data.tables to improve performance of manipulate ()
+activity <- copy(activity)
+thresholds <- copy(thresholds)
+gps <- copy(gps)
 
 manipulate::manipulate({
   temp_activity <- activity[as.Date(ts) == d_day,,]
