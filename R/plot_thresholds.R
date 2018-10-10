@@ -3,8 +3,7 @@
 #' \code{plot_thresholds} plots the calculated activity thresholds against the
 #'  period by which thersholds are aggregated.
 #'
-#' @param x An object of class \code{activity} or \code{states} that contains aggregated thresholds (return of
-#'  \code{\link{calculate_thresholds()}}).
+#' @param thresholds
 #'
 #' @examples
 #' plot_tresholds(thresholds = activity_thresholds_final,
@@ -13,18 +12,7 @@
 #' @export
 
 
-plot_thresholds <- function(x){
-
-  # Type Check
-  if(!any(is(x, "activity"), is(x, "states"))){
-    stop("Please provide an object of class 'activity' or 'states'")
-  }
-  # Input check
-  if(all(is.na(x$activity_thresholds_aggregated))){
-    stop("No activity thresholds to plot.")
-  }
-  thresholds <- x$activity_thresholds_aggregated
-
+plot_thresholds <- function(thresholds){
 
 manipulate::manipulate({
   thresholds[, threshold_period := factor(threshold_period),]
