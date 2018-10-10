@@ -13,38 +13,12 @@
 #' @import data.table
 #' @export
 
-plot_states <- function(activity,
-                        threshold){
+plot_states <- function(active_states,
+                        prop_time_active,
+                        gps = NULL){
 
-  # Type Check
-  if(!is(activity, "activity")){
-    stop("Please provide an object of class 'activity'")
-  }
-  # Input checks
-  if(length(threshold) != 1){
-    stop("Please provide only one threshold.")
-  }
-  if(!threshold %in% c("a", "b", "c")){
-    stop("Threshold must be either 'a', 'b' or 'c'")
-  }
-
-  # Extract data for threshold
-  th <- paste0("states_", threshold)
-  x <- activity[[which(names(activity) == th)]]
-
-  active_states <- x$active_states
-  prop_time_active <- x$prop_time_active
-  if(all(is.na(x$gps_active))){
+  if(all(is.na(gps))){
     gps <- NULL
-  } else {
-    gps <- x$gps_active
-  }
-
-  if(all(is.na(active_states))){
-    stop("No active states found for this threshold.")
-  }
-  if(all(is.na(prop_time_active))){
-    stop("Proportional time active is missing for this threshold.")
   }
 
   oldpar <- par(no.readonly=TRUE)
@@ -170,4 +144,3 @@ plot_states <- function(activity,
     d_animal_tag = manipulate::picker(as.list(active_states[,unique(animal_tag),])),
     add_gps = manipulate::checkbox(label = "add GPS " ,initial = FALSE)
   )}
-

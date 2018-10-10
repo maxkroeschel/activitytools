@@ -3,9 +3,10 @@
 #' \code{plot_activity} plots activity data against time of day for each day of
 #'   the week.
 #'
-#' @param x An object of class \code{activity}, containing
-#'   \code{$ctivity_data}, aggregated activity thresholds
-#'   (\code{$activity_thresholds_aggregated}, and optionally \code{gps_data}.
+#' @param activity A data.table with the activity data. The following columns
+#'   should be present: 'animal_tag' and 'ts'.
+#' @param gps A data.table with the gps data.
+#' @param thresholds
 #' @param animal_id
 #' @param tag_code
 #'
@@ -19,30 +20,15 @@
 #' @import data.table
 #' @export
 
-plot_activity <- function (x,
+plot_activity <- function (activity,
+                           thresholds,
+                           gps = NULL,
                            animal_id = NULL,
                            tag_code = NULL) {
 
-  # Type Check
-  if(!any(is(x, "activity"), is(x, "states"))){
-    stop("Please provide an object of class 'activity' or 'states'")
-  }
-  # Input checks
-  if(all(is.na(x$activity_data))){
-    stop("No activity data found.")
-  }
-  if(all(is.na(x$activity_thresholds_aggregated))){
-    stop("No activity thresholds found.")
-  }
-
-  activity <- x$activity_data
-  thresholds <- x$activity_thresholds_aggregated
-  if(all(is.na(x$gps_data))){
+  if(all(is.na(gps))){
     gps <- NULL
-  } else {
-    gps <- x$gps_data
   }
-
 
 if (!is.null(animal_id)) {ident <- "animal_id"
                           ident_value <- animal_id
@@ -71,6 +57,10 @@ if (is.null(gps)) {
                         nrow = 1)
     }
 
+# workaround: copy data.tables to improve performance of manipulate ()
+activity <- copy(activity)
+thresholds <- copy(thresholds)
+gps <- copy(gps)
 
 manipulate::manipulate({
   temp_activity <- activity[as.Date(ts) == d_day,,]
