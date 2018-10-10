@@ -20,7 +20,8 @@
 #' @import data.table
 #' @export
 
-thresholds2states <- function(activity,
+thresholds2states <- function(parameters,
+                              activity,
                               activity_gaps,
                               thresholds,
                               threshold_par) {
@@ -40,12 +41,9 @@ thresholds2states <- function(activity,
                       tmp <- activity2states(activity = activity[animal_tag == d_animal_tag &
                                                                   threshold_period == x_period,,],
                                             activity_gaps = activity_gaps[animal_tag == d_animal_tag,,],
-                                            axis = as.character(eval(thresholds[animal_tag == d_animal_tag &
-                                                              threshold_period == x_period, axis,])),
-                                            axis_ma = as.character(eval(thresholds[animal_tag == d_animal_tag &
-                                                                   threshold_period == x_period, axis_ma,])),
-                                            min_duration_active_state = thresholds[animal_tag == d_animal_tag &
-                                                                                     threshold_period == x_period, min_duration_active_state,],
+                                            axis = parameters$act.axis,
+                                            axis_ma = parameters$axis_ma,
+                                            min_duration_active_state = parameters$states.min_duration_active,
                                             threshold = thresholds[animal_tag == d_animal_tag &
                                                                      threshold_period == x_period, get(threshold_par),]
                                             )
