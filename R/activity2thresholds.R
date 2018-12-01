@@ -122,11 +122,7 @@ do.call("rbind",
                                  "n_thresholds" = NA,
                                  "bin_width" = NA,
                                  "run" = NA,
-                                 "warning" = "There are not enough activity data for this period or all activity data are 0!",
-                                 "axis" = axis,
-                                 "axis_ma" = axis_ma,
-                                 "min_duration_active_state" = min_duration_active_state,
-                                 "window_width_around_day" = window_width_around_day))
+                                 "warning" = "There are not enough activity data for this period or all activity data are 0!"))
              } else {
 
 # calculate the threshold sequence
@@ -246,27 +242,16 @@ do.call("rbind",
 
         return(data.table("animal_tag" = as.character(x_animal_tag),
                           "day" = i_day,
-                          threshold_a,
-                          threshold_b,
-                          threshold_c,
+                          "threshold_a" = threshold_a,
+                          "threshold_b" = threshold_b,
+                          "threshold_c" = threshold_c,
                           "n_thresholds" = temp_n_thresholds,
                           "bin_width" = temp_bin_width,
                           "run" = x_run,
-                          "warning" = as.character(temp_warning),
-                          "axis" = axis,
-                          "axis_ma" = axis_ma,
-                          "min_duration_active_state" = min_duration_active_state,
-                          "window_width_around_day" = window_width_around_day))
+                          "warning" = as.character(temp_warning)))
         }
   })))
 }))
 )# end of each run
 }))
 }
-
-#    return(do.call("rbind", threshold_values))
-#  })
-#}
-
-
-

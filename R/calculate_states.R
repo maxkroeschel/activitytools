@@ -45,6 +45,17 @@ calculate_states <- function(activity,
   }
   activity <- set_parameters(x = activity, parameters = pars)
 
+  # Extract parameters from activity object
+  parameters <- get_parameters(x = activity,
+                               parameters = c("act.axis",
+                                              "act.smooth_width_ma",
+                                              "thresh.n_runs",
+                                              "thresh.window_width_around_day",
+                                              "thresh.n_thresholds",
+                                              "thresh.min_bin_width",
+                                              "states.min_duration_active"))
+  parameters$axis_ma <- paste(parameters$act.axis,"_ma", parameters$act.smooth_width_ma, sep = "")
+
   if(all(is.na(activity$gps_data)) & all(is.na(activity$parameters$pta.pos))){
     stop("You must provide either GPS data or the parameter 'pos', which specifies the location of the research area.")
   }
@@ -60,10 +71,12 @@ calculate_states <- function(activity,
       print(paste0("Active states based on 'threshold ", t, "' ..."))
       states_t <- paste0("states_", t)
       activity[[states_t]]$active_states <-
-        thresholds2states(activity = activity$activity_data,
+        thresholds2states(parameters = parameters,
+                          activity = activity$activity_data,
                           activity_gaps = activity$activity_gaps,
                           thresholds = activity$activity_thresholds_aggregated,
                           threshold_par = paste('threshold_', t, sep = ""))
+
       print(paste0("Proportional time active based on 'threshold ", t, "' ..."))
       activity[[states_t]]$prop_time_active <-
         states2prop_time_active(active_states = activity[[states_t]]$active_states,

@@ -79,18 +79,10 @@ calculate_thresholds <- function(activity,
   activity_thresholds_raw[, threshold_period := ts2yearweek(day),]
   activity_data[,threshold_period := ts2yearweek(ts),]
 
-
-
   # aggregate activity thresholds
   activity_thresholds_aggregated <- aggregate_thresholds(thresholds = activity_thresholds_raw)
-  # add parameter options for other aggregation intervals?
-
-  activity_thresholds_raw <- split_animaltag(activity_thresholds_raw)
-  activity_thresholds_aggregated <- split_animaltag(activity_thresholds_aggregated)
 
   setcolorder(activity_thresholds_raw, c("animal_tag",
-                                     "animal_id",
-                                     "tag_code",
                                      "day",
                                      "threshold_period",
                                      "threshold_a",
@@ -99,25 +91,16 @@ calculate_thresholds <- function(activity,
                                      "n_thresholds",
                                      "bin_width",
                                      "run",
-                                     "warning",
-                                     "axis",
-                                     "axis_ma",
-                                     "min_duration_active_state",
-                                     "window_width_around_day"))
+                                     "warning"))
+
   setcolorder(activity_thresholds_aggregated, c("animal_tag",
-                                                 "animal_id",
-                                                 "tag_code",
                                                  "threshold_period",
                                                  "threshold_a",
                                                  "threshold_a_se",
                                                  "threshold_b",
                                                  "threshold_b_se",
                                                  "threshold_c",
-                                                 "threshold_c_se",
-                                                 "axis",
-                                                 "axis_ma",
-                                                 "min_duration_active_state",
-                                                 "window_width_around_day"))
+                                                 "threshold_c_se"))
 
   activity$activity_thresholds_raw <- activity_thresholds_raw
   activity$activity_thresholds_aggregated <- activity_thresholds_aggregated

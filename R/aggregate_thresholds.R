@@ -26,10 +26,6 @@ aggregate_thresholds <- function(thresholds) {
               threshold_c = round(mean(threshold_c)),
               threshold_c_se = round(sd(threshold_c)/sqrt(.N),2)),
              by = .(animal_tag,
-                    threshold_period,
-                    axis,
-                    axis_ma,
-                    min_duration_active_state,
-                    window_width_around_day)]
+                    threshold_period)]
     }
 }

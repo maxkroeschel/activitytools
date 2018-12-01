@@ -230,8 +230,12 @@ if (period == "day") {
                           night_twi = round(sum((day == 0 & active == 1), na.rm=T) /
                                               sum(day==0),4),
                           total = round(sum(active == 1, na.rm =T)/.N,4),
-                          n_na = sum(is.na(active)),
-                          nr_mins = .N),
+                          nr_na = sum(is.na(active)),
+                          nr_mins = .N,
+                          diurnality_ix = round((sum((day == 1 & active == 1), na.rm=T) / sum(day==1) -
+                                                   sum((night == 1 & active == 1), na.rm=T) / sum(night==1)) /
+                                                  (sum((day == 1 & active == 1), na.rm=T) / sum(day==1) +
+                                                     sum((night == 1 & active == 1), na.rm=T) / sum(night==1)),4)),
                        by = .(date_sr)]
 
   setkey(temp_prop_time_active, date_sr)
@@ -259,9 +263,13 @@ if (period == "day") {
                         night_twi = round(sum((day == 0 & active == 1), na.rm=T) /
                                             sum(day==0),4),
                         total = round(sum(active == 1, na.rm =T)/.N,4),
-                        n_na = sum(is.na(active)),
-                        nr_mins = .N),
-                     by = .(year_week)]
+                        nr_na = sum(is.na(active)),
+                        nr_mins = .N,
+                        diurnality_ix = round((sum((day == 1 & active == 1), na.rm=T) / sum(day==1) -
+                                                 sum((night == 1 & active == 1), na.rm=T) / sum(night==1)) /
+                                                (sum((day == 1 & active == 1), na.rm=T) / sum(day==1) +
+                                                   sum((night == 1 & active == 1), na.rm=T) / sum(night==1)),4)),
+                       by = .(year_week)]
   }
 
   temp_prop_time_active[, animal_tag := i, ]
@@ -301,8 +309,12 @@ if (period == "day") {
                         night_twi = round(sum((day == 0 & active == 1), na.rm=T) /
                                             sum(day==0),4),
                         total = round(sum(active == 1, na.rm =T)/.N,4),
-                        n_na = sum(is.na(active)),
-                        nr_mins = .N),
+                        nr_na = sum(is.na(active)),
+                        nr_mins = .N,
+                        diurnality_ix = round((sum((day == 1 & active == 1), na.rm=T) / sum(day==1) -
+                                                 sum((night == 1 & active == 1), na.rm=T) / sum(night==1)) /
+                                                (sum((day == 1 & active == 1), na.rm=T) / sum(day==1) +
+                                                   sum((night == 1 & active == 1), na.rm=T) / sum(night==1)),4)),
                      by = .(date_dawn)]
 
     setkey(temp_prop_time_active, date_dawn)
@@ -328,8 +340,12 @@ if (period == "day") {
                         night_twi = round(sum((day == 0 & active == 1), na.rm=T) /
                                             sum(day==0),4),
                         total = round(sum(active == 1, na.rm =T)/.N,4),
-                        n_na = sum(is.na(active)),
-                        nr_mins = .N),
+                        nr_na = sum(is.na(active)),
+                        nr_mins = .N,
+                        diurnality_ix = round((sum((day == 1 & active == 1), na.rm=T) / sum(day==1) -
+                                                    sum((night == 1 & active == 1), na.rm=T) / sum(night==1)) /
+                                                  (sum((day == 1 & active == 1), na.rm=T) / sum(day==1) +
+                                                     sum((night == 1 & active == 1), na.rm=T) / sum(night==1)),4)),
                      by = .(year_week)]
     }
 
@@ -337,7 +353,7 @@ if (period == "day") {
   }
 
   # add NA to days where more than max_na (minutes) if activity were missing
-  temp_prop_time_active[n_na > max_na,
+  temp_prop_time_active[nr_na > max_na,
                         `:=` (night=NA, day=NA, dawn=NA, dusk = NA, day_twi = NA,
                                night_twi = NA, total=NA), ]
 
@@ -348,7 +364,7 @@ if (period == "day") {
   temp_prop_time_active[nr_mins < 1430, `:=` (night=NA, day=NA, dawn=NA, dusk=NA,
                                               day_twi=NA, night_twi=NA, total=NA)]
 
-  temp_prop_time_active[, c("n_na", "nr_mins") := NULL]
+  temp_prop_time_active[, c("nr_na", "nr_mins") := NULL]
 
   print("..done!")
   return(temp_prop_time_active)
