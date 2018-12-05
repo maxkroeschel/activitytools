@@ -54,6 +54,9 @@ deer <- activity(activity_data = activity_data,
 
 ## Workflow 1 - all model parameters first ----
 data(activity_data)
+# reduce data set for fast testing
+# activity_data <- activity_data[activity_data$ts >= as.POSIXct("2009-01-01") &
+#                                  activity_data$ts <= as.POSIXct("2009-03-01"),]
 data(gps_data)
 
 # list of all parameters
@@ -103,7 +106,7 @@ deer <- calculate_thresholds(deer, plot_summary = TRUE)
 #data("thresholds")
 
 # Activity states (using parameter list defined above)
-deer <- calculate_states(deer)
+deer <- calculate_states(deer, add = c("pta", "gps"))
 
 # States again with different parameters
 deer2 <- states(activity = deer,
@@ -172,6 +175,7 @@ data("thresholds")
 
 # Activity states
 deer_states <- calculate_states(deer,
+                                add = c("pta", "gps")
                                 thresholds = c("a", "b", "c"),
                                 pta.dayshift = "dawn",
                                 pta.dawn_degree = 12,
@@ -180,6 +184,7 @@ deer_states <- calculate_states(deer,
 
 # using different parameters
 deer_states2 <- calculate_states(activity = deer,
+                                 add = c("pta", "gps")
                                  thresholds = c("a", "c"),
                                  pta.dayshift = "sunrise",
                                  pta.dawn_degree = 11,

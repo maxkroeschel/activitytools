@@ -4,6 +4,7 @@
 #'
 #' @param activity
 #' @param thresholds
+#' @param add
 #' @param pta.pos
 #' @param pta.dayshift
 #' @param pta.dawn_degree
@@ -18,6 +19,7 @@
 
 calculate_states <- function(activity,
                              thresholds = c("a", "b", "c"),
+                             add = NULL,
                              pta.pos = NULL,
                              pta.dayshift = NULL,
                              pta.dawn_degree = NULL,
@@ -56,12 +58,16 @@ calculate_states <- function(activity,
                                               "states.min_duration_active"))
   parameters$axis_ma <- paste(parameters$act.axis,"_ma", parameters$act.smooth_width_ma, sep = "")
 
-  if(all(is.na(activity$gps_data)) & all(is.na(activity$parameters$pta.pos))){
-    stop("You must provide either GPS data or the parameter 'pos', which specifies the location of the research area.")
-  }
-
   if(!any(c("a", "b", "c") %in% thresholds)){
     stop("Invalid threshold(s). Accepted threshold types are 'a', 'b', or 'c'")
+  }
+
+  if(!is.null(add) & !any(c("pta", "gps") %in% add)){
+    stop("Invalid option(s). Accepted option types are 'pta' and 'gps'")
+  }
+
+  if(("gps" %in% add) & all(is.na(activity$gps_data)) & all(is.na(activity$parameters$pta.pos))){
+    stop("You must provide either GPS data or the parameter 'pos', which specifies the location of the research area.")
   }
 
   # Calculate activity states, proportional time active, and add activity state
@@ -77,6 +83,7 @@ calculate_states <- function(activity,
                           thresholds = activity$activity_thresholds_aggregated,
                           threshold_par = paste('threshold_', t, sep = ""))
 
+    if("pta" %in% add){
       print(paste0("Proportional time active based on 'threshold ", t, "' ..."))
       activity[[states_t]]$prop_time_active <-
         states2prop_time_active(active_states = activity[[states_t]]$active_states,
@@ -87,6 +94,8 @@ calculate_states <- function(activity,
                                 dawn_degree = activity$parameters$pta.dawn_degree,
                                 period = activity$parameters$pta.period,
                                 max_na = activity$parameters$pta.max.na)
+    }
+    if("gps" %in% add){
       if(!all(is.na(activity$gps_data))){
         print(paste0("Classifying GPS data based on 'threshold ", t, "' ..."))
         activity[[states_t]]$gps_active <-
@@ -95,6 +104,7 @@ calculate_states <- function(activity,
                      active_states = activity[[states_t]]$active_states)
         print("..done!")
       }
+    }
     }
   }
   return(activity)
