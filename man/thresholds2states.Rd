@@ -18,7 +18,9 @@ should be present: 'animal_tag' and 'ts'.}
 Data.table with the ...
 }
 \description{
-\code{thresholds2states}
+Calculates active states based on a list of threshold values (return
+  of function \code{\link{activity2thresholds}} that is grouped by a
+  defined period with function \code{\link{aggregate_thresholds}})
 }
 \examples{
 active_states_a <-  thresholds2states(activity = activity_data,

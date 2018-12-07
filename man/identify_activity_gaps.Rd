@@ -4,14 +4,14 @@
 \alias{identify_activity_gaps}
 \title{Identify data gaps in the activity data}
 \usage{
-identify_activity_gaps(activity, axis)
+identify_activity_gaps(activity, act)
 }
 \arguments{
 \item{activity}{A data.table with the activity data. The following columns
 should be present: 'animal_tag', 'ts' and the activity variable that is
 scanned for gaps (e.g. 'act_x').}
 
-\item{axis}{The activity variable to scan for gaps.}
+\item{act}{The activity variable to scan for gaps.}
 }
 \value{
 A data.table with the start- and end-timestamps of the identified
@@ -22,5 +22,5 @@ A data.table with the start- and end-timestamps of the identified
 }
 \examples{
 activity_data_gaps <- identify_activity_gaps(activity = activity_data,
-                                             axis = 'act_xy')
+                                             act = 'act_xy')
 }

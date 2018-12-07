@@ -7,7 +7,7 @@
 #'   \code{$activity_data}
 #'
 #' @param activity An object of class \code{activity}.
-#' @param axis
+#' @param act
 #' @param thresh.n_runs
 #' @param thresh.window_width_around_day
 #' @param thresh.n_thresholds
@@ -21,7 +21,7 @@
 #' @export
 
 calculate_thresholds <- function(activity,
-                                axis = NULL,
+                                act = NULL,
                                 thresh.n_runs = NULL,
                                 thresh.window_width_around_day = NULL,
                                 thresh.n_thresholds = NULL,
@@ -49,14 +49,14 @@ calculate_thresholds <- function(activity,
 
   # Extract parameters from activity object
   parameters <- get_parameters(x = activity,
-                               parameters = c("act.axis",
+                               parameters = c("act.act",
                                               "act.smooth_width_ma",
                                               "thresh.n_runs",
                                               "thresh.window_width_around_day",
                                               "thresh.n_thresholds",
                                               "thresh.min_bin_width",
                                               "states.min_duration_active"))
-  parameters$axis_ma <- paste(parameters$act.axis,"_ma", parameters$act.smooth_width_ma, sep = "")
+  parameters$act_ma <- paste(parameters$act.act,"_ma", parameters$act.smooth_width_ma, sep = "")
 
   # Get activity data and gaps from activity object
   activity_data <- activity$activity_data
@@ -66,8 +66,8 @@ calculate_thresholds <- function(activity,
   activity_thresholds_raw <-
     activity2thresholds(activity = activity_data,
                         activity_gaps = activity$data_gaps,
-                        axis = parameters$act.axis,
-                        axis_ma = parameters$axis_ma,
+                        act = parameters$act.act,
+                        act_ma = parameters$act_ma,
                         n_runs = parameters$thresh.n_runs,
                         window_width_around_day = parameters$thresh.window_width_around_day,
                         n_thresholds = parameters$thresh.n_thresholds,

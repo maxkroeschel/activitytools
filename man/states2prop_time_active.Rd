@@ -5,8 +5,8 @@
 \title{Calculate proportion of time in state active}
 \usage{
 states2prop_time_active(active_states, activity_gaps, gps = NULL,
-  pos = NULL, dayshift = "sunrise", dawn_degree = 12,
-  max_na_per_day = 0)
+  pos = NULL, dayshift = "sunrise", dawn_degree = 12, period = "day",
+  max_na = 0)
 }
 \arguments{
 \item{active_states}{A data.table with the predicted active states (return
@@ -30,9 +30,12 @@ for dawn.}
 \item{dawn_degree}{An integer between 0 and 90 that defines the angle of the
 sun below the horizon at dawn and dusk.}
 
-\item{max_na_per_day}{An integer with the maximum number of minutes with NA
-that are alloes for each day. When this threshold is crossed proportion of
-time in state active will be set to NA for this day.}
+\item{period}{Either "day" or "week", specifies the period of time in which the
+proportion of time in state active is aggregated.}
+
+\item{max_na}{An integer with the maximum number of minutes with NA
+that are alloes for each period. When this threshold is crossed proportion of
+time in state active will be set to NA for this period.}
 }
 \value{
 A data.table with the proportion of time in state active for each
@@ -51,6 +54,7 @@ states2prop_time_active(active_states = active_states_a,
                                   gps = gps_data,
                                   dayshift = "sunrise",
                                   dawn_degree = 12,
-                                  max_na_per_day = 30)
+                                  period = "day"
+                                  max_na = 30)
 
 }

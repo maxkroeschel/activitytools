@@ -4,7 +4,7 @@
 \alias{activity2thresholds}
 \title{Activity2thresholds}
 \usage{
-activity2thresholds(activity, activity_gaps, axis, axis_ma, n_runs,
+activity2thresholds(activity, activity_gaps, act, act_ma, n_runs,
   window_width_around_day, n_thresholds, min_bin_width,
   min_duration_active_state, plot_summary)
 }
@@ -15,9 +15,9 @@ should be present: 'animal_tag' and 'ts'.}
 \item{activity_gaps}{A data.table with the identified gaps in the activity
 data (return of function \code{\link{identify_activity_gaps}}.}
 
-\item{axis}{a}
+\item{}{a}
 
-\item{axis_ma}{a}
+\item{act_ma}{a}
 
 \item{n_runs}{a}
 
@@ -40,8 +40,8 @@ Data.table with the ...
 \examples{
 activity_thresholds <- activity2thresholds(activity = activity_data,
                               activity_gaps = activity_data_gaps,
-                              axis = 'act_xy',
-                              axis_ma = 'act_xy_ma2',
+                              act = 'act_xy',
+                              act_ma = 'act_xy_ma2',
                               n_runs = 1,
                               window_width_around_day = 3,
                               n_thresholds = c(25:35),

@@ -5,9 +5,9 @@
 #' @param activity A data.table with the activity data. The following columns
 #'   should be present: 'animal_tag' and 'ts'.
 #' @param activity_gaps The data.table with the identified activity gaps.
-#' @param axis
-#' @param axis_ma
-#' @param width_axis_ma
+#' @param act
+#' @param act_ma
+#' @param width_act_ma
 #' @param threshold
 #' @param min_duration_active_state
 #'
@@ -29,9 +29,9 @@
 
 activity2states <- function(activity,
                             activity_gaps = NULL,
-                            axis = 'act_xy',
-                            axis_ma = 'no',
-                            width_axis_ma,
+                            act = 'act_xy',
+                            act_ma = 'no',
+                            width_act_ma,
                             threshold,
                             min_duration_active_state) {
 
@@ -51,20 +51,20 @@ activity2states <- function(activity,
     activity <- activity[order(animal_id, ts),,]
 
     # calculate moving average if not supplied
-    if (sum(names(activity) == axis_ma) == 0 | axis_ma == 'no') {
-      activity[,(axis_ma) := zoo::rollapply(get(axis),
-                                            width = width_axis_ma,
+    if (sum(names(activity) == act_ma) == 0 | act_ma == 'no') {
+      activity[,(act_ma) := zoo::rollapply(get(act),
+                                            width = width_act_ma,
                                             FUN = function(x) round(mean(x, na.rm =T)),
                                             partial = T,
                                             align = "center"),]
       }
 
-    # some data points in axis_ma have very small negative numbers that
+    # some data points in act_ma have very small negative numbers that
     # have to be changed
 
-    activity[, (axis_ma) := sapply(get(axis_ma), function(x) max(0,x)),]
+    activity[, (act_ma) := sapply(get(act_ma), function(x) max(0,x)),]
 
-    # pad start and end points of data gaps with "axis_ma <- -1" to allow for
+    # pad start and end points of data gaps with "act_ma <- -1" to allow for
     # easy state recognition
 
   if (!is.null(activity_gaps)){
@@ -77,7 +77,7 @@ activity2states <- function(activity,
                                          activity_gaps[,.(animal_id,
                                                           ts = end_NA),],
                                          fill = TRUE)
-      insert_activity_data_gaps[,(axis_ma) := -1,]
+      insert_activity_data_gaps[,(act_ma) := -1,]
 
       activity <- rbind(activity, insert_activity_data_gaps, fill = TRUE)
       activity <- activity[order(animal_id, ts),,]
@@ -87,14 +87,14 @@ activity2states <- function(activity,
     }
 
     # if data gaps (NA) were not removed before, pull them to resting states
-      activity[is.na(get(axis_ma)), (axis_ma) := -1,]
+      activity[is.na(get(act_ma)), (act_ma) := -1,]
 
     # calculate start end end timestamps of active states
     active_states <-
-      activity[,.(to_active = ts[which(diff(c(-1,get(axis_ma),-1) >= threshold) == 1)],
-                       end_active = ts[which(diff(c(-1,get(axis_ma),-1) >= threshold) == -1)-1],
-                       to_active_num = as.numeric(which(diff(c(-1,get(axis_ma),-1) >= threshold) == 1)),
-                       end_active_num = as.numeric(which(diff(c(-1,get(axis_ma),-1) >= threshold) == -1)-1)),]
+      activity[,.(to_active = ts[which(diff(c(-1,get(act_ma),-1) >= threshold) == 1)],
+                       end_active = ts[which(diff(c(-1,get(act_ma),-1) >= threshold) == -1)-1],
+                       to_active_num = as.numeric(which(diff(c(-1,get(act_ma),-1) >= threshold) == 1)),
+                       end_active_num = as.numeric(which(diff(c(-1,get(act_ma),-1) >= threshold) == -1)-1)),]
 
     # calculate duration of active periods
     active_states[, duration := difftime(end_active, to_active, units = "mins"),]
@@ -114,7 +114,7 @@ activity2states <- function(activity,
                         "act_var" = numeric()))
     } else {
 
-      activity_vector <- activity[,get(axis),]
+      activity_vector <- activity[,get(act),]
       ts_vector <- activity[,ts,]
 
        # error1

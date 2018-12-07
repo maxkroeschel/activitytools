@@ -5,18 +5,18 @@
 #'   in the object as \code{$activity_gaps}
 #'
 #' @param activity An object of class \code{activity}.
-#' @param axis The activity variable to scan for gaps.
+#' @param act The activity variable to scan for gaps.
 #' @return  An object of class \code{activity} containing \code{$activity_gaps}
 #'   in which the start- and end-timestamps of the identified gaps are
 #'   specified.
 #' @examples
 #' activity_data_gaps <- identify_activity_gaps(activity = activity_data,
-#'                                              axis = 'act_xy')
+#'                                              act = 'act_xy')
 #' @import data.table
 #' @export
 
 identify_activity_gaps <- function(activity,
-                                   act.axis = NULL) {
+                                   act.act = NULL) {
   # Type check
   if(!is(activity, "activity")){
     stop("Please provide an object of class 'activity'")
@@ -29,15 +29,15 @@ identify_activity_gaps <- function(activity,
 
   # Extract parameters from activity object
   parameters <- get_parameters(x = activity,
-                               parameters = c("act.axis"))
-  axis <- parameters$act.axis
+                               parameters = c("act.act"))
+  act <- parameters$act.act
 
   # Get activity data from activity object
   activity_data <- activity$activity_data
 
   activity_gaps <-
-    activity_data[,.(to_NA = ts[which(diff(is.na(c(1,get(axis),1))) == 1)],
-                     end_NA = ts[which(diff(is.na(c(1,get(axis),1))) == -1)-1]),
+    activity_data[,.(to_NA = ts[which(diff(is.na(c(1,get(act),1))) == 1)],
+                     end_NA = ts[which(diff(is.na(c(1,get(act),1))) == -1)-1]),
                   by = animal_tag]
   if (nrow(activity_gaps) > 0) {
     activity_gaps[, animal_id := as.integer(unlist(strsplit(animal_tag, split = "_"))[1]),

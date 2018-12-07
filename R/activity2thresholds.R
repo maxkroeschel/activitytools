@@ -6,8 +6,8 @@
 #'   should be present: 'animal_tag' and 'ts'.
 #' @param activity_gaps A data.table with the identified gaps in the activity
 #'    data (return of function \code{\link{identify_activity_gaps}}.
-#' @param axis a
-#' @param axis_ma a
+#' @param act a
+#' @param act_ma a
 #' @param n_runs a
 #' @param window_width_around_day a
 #' @param n_thresholds a
@@ -19,8 +19,8 @@
 #' @examples
 #' activity_thresholds <- activity2thresholds(activity = activity_data,
 #'                               activity_gaps = activity_data_gaps,
-#'                               axis = 'act_xy',
-#'                               axis_ma = 'act_xy_ma2',
+#'                               act = 'act_xy',
+#'                               act_ma = 'act_xy_ma2',
 #'                               n_runs = 1,
 #'                               window_width_around_day = 3,
 #'                               n_thresholds = c(25:35),
@@ -37,8 +37,8 @@
 # (1) predict state for a sequence of threshold values
   activity2thresholds <- function(activity,
                                   activity_gaps,
-                                  axis,
-                                  axis_ma,
+                                  act,
+                                  act_ma,
                                   n_runs,
                                   window_width_around_day,
                                   n_thresholds,
@@ -89,7 +89,7 @@ do.call("rbind",
   if(!"day" %in% names(x_activity)) {
     x_activity[,day := as.Date(ts),]
   }
-  day_seq <- x_activity[!is.na(get(axis)), unique(day)]
+  day_seq <- x_activity[!is.na(get(act)), unique(day)]
   day_seq <- sort(day_seq)
 
 # calculate threshold values for each observation day
@@ -112,8 +112,8 @@ do.call("rbind",
   # check if 1) the data set contains enough data points (enough means >288) and
   #          2) if all data are equal to 0
   # --> end currend loop and return an empty data.frame with a warning message
-        if ((i_activity[!is.na(get(axis_ma)),.N,] < 288) |
-             (sum(i_activity[!is.na(get(axis_ma)),get(axis_ma),]) == 0)) {
+        if ((i_activity[!is.na(get(act_ma)),.N,] < 288) |
+             (sum(i_activity[!is.na(get(act_ma)),get(act_ma),]) == 0)) {
                return(data.table("animal_tag" = x_animal_tag,
                                  "day" = i_day,
                                  "threshold_a" = NA,
@@ -133,7 +133,7 @@ do.call("rbind",
 
   # set the start value of the threshold sequence to the position of the first maximun
   # to facilitate automated selection of the best threshold value
-    min_seq <- max(1, round(dmax.f(i_activity[,get(axis_ma),])[1]))
+    min_seq <- max(1, round(dmax.f(i_activity[,get(act_ma),])[1]))
 
   # sometimes the density distribution is not characterized by a distinct peak
   # at the beginning, that causes a wrong starting position of the threshold
@@ -141,14 +141,14 @@ do.call("rbind",
   # the 35quantile then explicitly search for a peak in the first part of the
   # distribution
     if (min_seq != 1 &
-        min_seq > i_activity[, quantile(get(axis_ma), na.rm=T, probs = 0.35),]) {
+        min_seq > i_activity[, quantile(get(act_ma), na.rm=T, probs = 0.35),]) {
           min_seq <- max(1, round(min(dmax.f(
-                                i_activity[get(axis_ma) <= quantile(get(axis_ma), na.rm=T, probs = 0.5),
-                                                  get(axis_ma)])),1))
-          temp_warning <- 'Density distribution of your axis_ma has no peak before quantile(0.33)!'}
+                                i_activity[get(act_ma) <= quantile(get(act_ma), na.rm=T, probs = 0.5),
+                                                  get(act_ma)])),1))
+          temp_warning <- 'Density distribution of your act_ma has no peak before quantile(0.33)!'}
 
   # set the end value of the threshold sequence
-    max_seq <- max(3,quantile(i_activity[, get(axis_ma)], probs = 0.80, na.rm =T))
+    max_seq <- max(3,quantile(i_activity[, get(act_ma)], probs = 0.80, na.rm =T))
 
   # calculate the increment of the threshold sequence
     temp_bin_width <- max(min_bin_width, round((max_seq - min_seq)/temp_n_thresholds))
@@ -166,10 +166,10 @@ do.call("rbind",
     ls <- lapply(threshold_seq, FUN = function(i_threshold_seq)
         activity2states(activity = i_activity,
                                   activity_gaps = activity_gaps,
-                                  axis = axis,
-                                  axis_ma = axis_ma,
+                                  act = act,
+                                  act_ma = act_ma,
                                   #ts,
-                                  #width_axis_ma = 2,
+                                  #width_act_ma = 2,
                                   threshold = i_threshold_seq,
                                   min_duration_active_state = min_duration_active_state))
         names(ls) <- threshold_seq
@@ -213,8 +213,8 @@ do.call("rbind",
         if (plot_summary == TRUE){
           layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE))
           par(mar = c(4.1,4.1,5.1,2.1))
-          plot(density(i_activity[,get(axis_ma)], na.rm=T),
-               xlab = axis_ma,
+          plot(density(i_activity[,get(act_ma)], na.rm=T),
+               xlab = act_ma,
                main = paste("animal_tag: ", x_animal_tag, "  -  day: ", i_day, sep = ""),
                lwd = 2, xlim = c(-10,250))
           abline(v=threshold_seq, col = "black")

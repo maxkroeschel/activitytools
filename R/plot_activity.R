@@ -74,18 +74,18 @@ if (gps_present != "no") {
     }
   }
 
-if (axis == "act_xy"){
+if (act == "act_xy"){
   if (!("act_xy" %in% colnames(activity))) {
     message("There is no column <act_xy> present!")
   }
   d_ylim_max <- 350
   plot(x = temp_activity[,ts],
-       y = temp_activity[,get(axis)],
+       y = temp_activity[,get(act)],
        type = 'h',
        xlim = c(as.POSIXct(d_day, format = "%Y-%m-%d"),
                 as.POSIXct(d_day, format = "%Y-%m-%d") + lubridate::days(1)),
        ylim = c(0,d_ylim_max),
-       xlab = "time", ylab = axis, xaxt = "n",
+       xlab = "time", ylab = act, xaxt = "n",
        frame.plot = F, col = "blue")
   axis.POSIXct(1, at = seq(as.POSIXct(d_day),
                            as.POSIXct(d_day) + lubridate::days(1), by = "hour"))
@@ -97,12 +97,12 @@ if (axis == "act_xy"){
                         sep= ""))
   } else {
     d_ylim_max <- 200
-    plot(temp_activity[,ts], temp_activity[,get(axis)],
+    plot(temp_activity[,ts], temp_activity[,get(act)],
           type = 'h', col = "blue",
           xlim = c(as.POSIXct(d_day, format = "%Y-%m-%d"),
                    as.POSIXct(d_day, format = "%Y-%m-%d") + lubridate::days(1)),
                   ylim = c(0, d_ylim_max),
-                  xlab = "time", ylab = axis,
+                  xlab = "time", ylab = act,
                   frame.plot = F, xaxt = "n")
     axis.POSIXct(1, at = seq(as.POSIXct(d_day),
                              as.POSIXct(d_day) + lubridate::days(1),
@@ -157,8 +157,8 @@ if (plot_movement == T & gps_present == "yes") {
 # plot moving average
 if (plot_moving_window == TRUE) {
   lines(temp_activity[,ts,],
-       zoo::rollapply(temp_activity[,get(axis)],
-                      width = width_axis_ma,
+       zoo::rollapply(temp_activity[,get(act)],
+                      width = width_act_ma,
                       FUN = function(x) mean(x, na.rm =T),
                  partial = T, align = "center"),
        col = "red",
@@ -168,9 +168,9 @@ if (plot_moving_window == TRUE) {
 # plot state
 if (plot_state == T) {
   temp_active_states <- activity2states(activity = temp_activity,
-                                        axis = axis,
-                                        axis_ma = 'no',
-                                        width_axis_ma = width_axis_ma,
+                                        act = act,
+                                        act_ma = 'no',
+                                        width_act_ma = width_act_ma,
                                         threshold = threshold,
                                         min_duration_active_state = min_duration_active_state)
 
@@ -191,8 +191,8 @@ if (plot_predicted_state == T) {
   # plot temp_active_states for threshold_a
   temp_active_states <-
     activity2states(activity = temp_activity,
-                    axis = temp_thresholds[,axis,],
-                    axis_ma = temp_thresholds[,axis_ma,],
+                    act = temp_thresholds[,act,],
+                    act_ma = temp_thresholds[,act_ma,],
                     threshold = temp_thresholds[,threshold_a,],
                     min_duration_active_state = temp_thresholds[,min_duration_active_state,])
 
@@ -206,8 +206,8 @@ if (plot_predicted_state == T) {
   # plot temp_active_states for threshold_b
     temp_active_states <-
         activity2states(activity = temp_activity,
-                        axis = temp_thresholds[,axis,],
-                        axis_ma = temp_thresholds[,axis_ma,],
+                        act = temp_thresholds[,act,],
+                        act_ma = temp_thresholds[,act_ma,],
                         threshold = temp_thresholds[,threshold_b,],
                         min_duration_active_state = temp_thresholds[,min_duration_active_state,])
 
@@ -221,8 +221,8 @@ if (plot_predicted_state == T) {
   # plot temp_active_states for threshold_c
     temp_active_states <-
         activity2states(activity = temp_activity,
-                        axis = temp_thresholds[,axis,],
-                        axis_ma = temp_thresholds[,axis_ma,],
+                        act = temp_thresholds[,act,],
+                        act_ma = temp_thresholds[,act_ma,],
                         threshold = temp_thresholds[,threshold_c,],
                         min_duration_active_state = temp_thresholds[,min_duration_active_state,])
 
@@ -234,14 +234,14 @@ if (plot_predicted_state == T) {
         abline(h = temp_thresholds$threshold_c-0.5, lty = 2, col = "green")
         }
      },
-  axis = manipulate::picker("act_x", "act_y", "act_xy"),
+  act = manipulate::picker("act_x", "act_y", "act_xy", initial = "act_xy"),
   d_day = manipulate::picker(label = "day", as.list(as.character(unique(
     as.Date(activity[,ts]))))),
   plot_gps = manipulate::checkbox(initial = FALSE),
   plot_movement = manipulate::checkbox(initial = FALSE),
   plot_moving_window = manipulate::checkbox(initial = FALSE),
   plot_state  = manipulate::checkbox(initial = FALSE),
-  width_axis_ma = manipulate::slider(min = 1, max = 60, step = 1, initial = 3),
+  width_act_ma = manipulate::slider(min = 1, max = 60, step = 1, initial = 3),
   threshold = manipulate::slider(min = 0, max = 150, step = 1, initial = 0),
   min_duration_active_state = manipulate::slider(min = 0, max = 150, step = 5, initial = 5),
   plot_predicted_state  = manipulate::checkbox(initial = FALSE))

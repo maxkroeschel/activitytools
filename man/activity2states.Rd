@@ -4,8 +4,8 @@
 \alias{activity2states}
 \title{Activity2states}
 \usage{
-activity2states(activity, activity_gaps = NULL, axis = "act_xy",
-  axis_ma = "no", width_axis_ma, threshold, min_duration_active_state)
+activity2states(activity, activity_gaps = NULL, act = "act_xy",
+  act_ma = "no", width_act_ma, threshold, min_duration_active_state)
 }
 \arguments{
 \item{activity}{A data.table with the activity data. The following columns

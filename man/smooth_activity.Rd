@@ -4,18 +4,18 @@
 \alias{smooth_activity}
 \title{Smooth activity data}
 \usage{
-smooth_activity(activity, axis, width_axis_ma, update_NA = TRUE)
+smooth_activity(activity, act, width_act_ma, update_NA = TRUE)
 }
 \value{
 A data.table
 }
 \description{
 \code{smooth_activity_data} smoothes an activity variable by calculating a
-  moving average with window width specified by \code{width_axis_ma}.
+  moving average with window width specified by \code{width_act_ma}.
 }
 \examples{
 activity_data <- smooth_activity_data(activity = activity_data,
-                                          axis = 'act_xy',
-                                          width_axis_ma = 2,
+                                          act = 'act_xy',
+                                          width_act_ma = 2,
                                           update_NA = FALSE)
 }

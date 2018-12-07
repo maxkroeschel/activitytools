@@ -41,8 +41,8 @@ thresholds2states <- function(parameters,
                       tmp <- activity2states(activity = activity[animal_tag == d_animal_tag &
                                                                   threshold_period == x_period,,],
                                             activity_gaps = activity_gaps[animal_tag == d_animal_tag,,],
-                                            axis = parameters$act.axis,
-                                            axis_ma = parameters$axis_ma,
+                                            act = parameters$act.act,
+                                            act_ma = parameters$act_ma,
                                             min_duration_active_state = parameters$states.min_duration_active,
                                             threshold = thresholds[animal_tag == d_animal_tag &
                                                                      threshold_period == x_period, get(threshold_par),]

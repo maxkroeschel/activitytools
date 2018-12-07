@@ -16,7 +16,7 @@ activity_data$act_xy <- activity_data$act_x + activity_data$act_y
 
 # define all parameter that are used for state detection
 
-pars <- list(act.axis = "act_xy",
+pars <- list(act.act = "act_xy",
              act.reg_minutes = 5,
              act.smooth_width_ma = 2,
              thresh.n_runs = 1,

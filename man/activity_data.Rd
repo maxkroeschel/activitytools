@@ -17,7 +17,6 @@ activity_data
 }
 \description{
 A data set containing the activity data of three tagged red deer. The sensor
- measured acceleration in two axis (x = forward–backward horizontal motion
  and y =  left–right horizontal motion) and was set to record activity
  every 5 minutes.
 }

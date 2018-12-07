@@ -18,11 +18,11 @@ activity <- function(activity_data,
                      keep_source = TRUE){
 
   # Input checks for activity data
-  available_activity_axes <- names(activity_data)[grepl(pattern =  'act',
+  available_act <- names(activity_data)[grepl(pattern =  'act',
                                                         names(activity_data))]
 
   # search for columns with activity data
-  if (length(available_activity_axes) == 0){
+  if (length(available_act) == 0){
     stop("You have to provide at least one column with activity data. The column name has to start with \"act\"!")
   }
   # check if necessary columns are present
@@ -68,8 +68,8 @@ activity <- function(activity_data,
                                    gps_active = NA),
                    gps_data = NA)
 
-  activity$parameters <- list(act.available_axes = NA,
-                              act.axis = NA,
+  activity$parameters <- list(act.available_act = NA,
+                              act.act = NA,
                               act.reg_minutes = NA,
                               act.smooth_width_ma = NA,
                               thresh.n_runs = NA,
@@ -83,7 +83,7 @@ activity <- function(activity_data,
                               pta.period = NA,
                               pta.max_na = NA)
 
-  activity$parameters$act.available_axes <- available_activity_axes
+  activity$parameters$act.available_act <- available_act
   # set class to "activity"
   activity <- structure(activity, class = "activity")
 
@@ -103,7 +103,7 @@ activity <- function(activity_data,
                 "animal_id",
                 "tag_code",
                 "ts",
-                available_activity_axes)
+                available_act)
   col_oth <- names(activity_data)[!names(activity_data) %in% col_req]
   setcolorder(activity_data, c(col_req, col_oth))
 

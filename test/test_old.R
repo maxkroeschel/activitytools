@@ -34,13 +34,13 @@ activity_data[,.(min = min(diff(ts)),
 activity_data[, act_xy := act_x + act_y]
 
 activity_data <- smooth_activity(activity = activity_data,
-                                 axis = 'act_xy',
-                                 width_axis_ma = 2,
+                                 act = 'act_xy',
+                                 width_act_ma = 2,
                                  update_NA = TRUE)
 
 # identify and store data gaps in the activity data
 activity_data_gaps <- identify_activity_gaps(activity = activity_data,
-                                             axis = 'act_xy')
+                                             act = 'act_xy')
 
 # remove data gaps
 activity_data <- remove_activity_gaps(activity = activity_data,
@@ -53,8 +53,8 @@ activity_data <- split_animaltag(data = activity_data)
 activity_thresholds <-
   data.table(activity2thresholds(activity = activity_data,
                                  activity_gaps = activity_data_gaps,
-                                 axis = 'act_xy',
-                                 axis_ma = 'act_xy_ma2',
+                                 act = 'act_xy',
+                                 act_ma = 'act_xy_ma2',
                                  n_runs = 1,
                                  window_width_around_day = 3,
                                  n_thresholds = c(25:35),
