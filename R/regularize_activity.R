@@ -36,19 +36,22 @@ regularize_activity <- function(activity,
   activity <- set_parameters(x = activity, parameters = pars)
 
   # Extract parameters from activity object
-  parameters <- get_parameters(x = activity, parameters = "act.reg_minutes")
+  parameters <- get_parameters(x = activity, parameters = c("act.reg_minutes",
+                                                            "act.available_act"))
   minutes <- parameters$act.reg_minutes
-
+  available_act <- parameters$act.available_act
   # Get activity data from activity object
   activity_data <- activity$activity_data
 
   activity_data[, ts := as.POSIXct(round(as.numeric(ts)/(minutes*60))*(minutes*60),
                                    origin=(as.POSIXlt('1970-01-01')))]
 
+  calculate_mean <- function(x) {as.integer(mean(x, na.rm =T))}
+
   if (nrow(activity_data[,.N, by = .(animal_tag, ts)][N!=1,.N, by = .(N)]) >0 ){
-    activity_data <- activity_data[,.(act_x = as.integer(mean(act_x, na.rm=T)),
-                                      act_y = as.integer(mean(act_y, na.rm=T))),
-                                   by = .(animal_tag,ts)]
+    activity_data <- activity_data[, lapply(.SD, calculate_mean),
+                                   .SDcols = available_act,
+                                   by = .(animal_tag,ts) ]
   }
 
   setkey(activity_data, animal_tag, ts)
@@ -57,9 +60,8 @@ regularize_activity <- function(activity,
                                              by = paste(minutes," min", sep = "")),
                                        by = animal_tag], animal_tag, V1)]
   activity_data <- split_animaltag(activity_data)
-  activity_data[, act_xy := act_x + act_y]
-  col_req <-  c("animal_tag", "animal_id", "tag_code", "act_x", "act_y",
-                "act_xy", "ts")
+
+  col_req <-  c("animal_tag", "animal_id", "tag_code", "ts", available_act)
   col_oth <- names(activity_data)[!names(activity_data) %in% col_req]
   setcolorder(activity_data, c(col_req, col_oth))
   activity$activity_data <- activity_data[order(animal_tag, ts)]

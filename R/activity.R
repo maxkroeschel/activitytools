@@ -96,7 +96,7 @@ activity <- function(activity_data,
   if(keep_source == TRUE){
     activity$source_data <- data.table(activity_data)[order(animal_id, ts),,]
   }
-  activity_data <- data.table(activity_data)
+  activity_data <- data.table(activity_data)[order(animal_id, ts),,]
   activity_data <- create_animaltag(activity_data)
 
   col_req <-  c("animal_tag",
