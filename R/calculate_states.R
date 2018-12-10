@@ -50,13 +50,13 @@ calculate_states <- function(activity,
   # Extract parameters from activity object
   parameters <- get_parameters(x = activity,
                                parameters = c("act.act",
-                                              "act.smooth_width_ma",
+                                              "act.width_ma",
                                               "thresh.n_runs",
                                               "thresh.window_width_around_day",
                                               "thresh.n_thresholds",
                                               "thresh.min_bin_width",
                                               "states.min_duration_active"))
-  parameters$act_ma <- paste(parameters$act.act,"_ma", parameters$act.smooth_width_ma, sep = "")
+  parameters$act_ma <- paste(parameters$act.act,"_ma", parameters$act.width_ma, sep = "")
 
   if(!any(c("a", "b", "c") %in% thresholds)){
     stop("Invalid threshold(s). Accepted threshold types are 'a', 'b', or 'c'")

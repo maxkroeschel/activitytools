@@ -5,7 +5,7 @@
 \title{Activity2states}
 \usage{
 activity2states(activity, activity_gaps = NULL, act = "act_xy",
-  act_ma = "no", width_act_ma, threshold, min_duration_active_state)
+  act_ma = "no", act.width_ma, threshold, min_duration_active_state)
 }
 \arguments{
 \item{activity}{A data.table with the activity data. The following columns

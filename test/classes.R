@@ -10,7 +10,7 @@ activity_data$act_xy <- activity_data$act_x + activity_data$act_y
 
 pars <- list(act.act = "act_xy",
              act.reg_minutes = 5,
-             act.smooth_width_ma = 2,
+             act.width_ma = 2,
              tresh.n_runs = 1,
              thresh.window_width_around_day = 3,
              thresh.n_thresholds = c(25:35),
@@ -62,7 +62,7 @@ data(gps_data)
 # list of all parameters
 pars <- list(act.act = "act_xy",
              act.reg_minutes = 5,
-             act.smooth_width_ma = 2,
+             act.width_ma = 2,
              thresh.n_runs = 1,
              thresh.window_width_around_day = 3,
              thresh.n_thresholds = c(25:35),
@@ -76,6 +76,7 @@ pars <- list(act.act = "act_xy",
 
 deer <- activity(activity_data = activity_data, gps_data = gps_data, parameters = pars)
 
+plot(deer, select = "activity_eval", select_animal_id = 1)
 # Regularize
 # deer$activity_data[,.(min = min(diff(ts)),
 #                  max = max(diff(ts)),
@@ -121,8 +122,11 @@ deer2 <- states(activity = deer,
 # Thresholds
 plot(deer, select = "thresholds")
 #Activity
-plot(deer, animal_id = 1)
-plot(deer, select = "activity", animal_id = 1) # same
+plot(deer, select_animal_id = 1)
+plot(deer)
+
+plot(deer, select = "activity_eval", select_animal_id = 1)
+plot(deer, select = "activity", select_animal_id = 1) # same
 # Active states
 plot(deer, select="states", threshold = "a")
 
@@ -155,7 +159,7 @@ deer$activity_data[,.(min = min(diff(ts)),
 # Smooth activity
 deer <- smooth_activity(activity = deer,
                         act.act = 'act_xy',
-                        act.smooth_width_ma = 2,
+                        act.width_ma = 2,
                         update_NA = TRUE)
 
 # Identify and remove activity gaps

@@ -15,6 +15,7 @@
 plot.activity <- function(x,
                           select = "activity",
                           threshold = NULL,
+                          select_animal_id = NULL,
                           ...){
   # Type check
   if(!is(x, "activity")){
@@ -22,30 +23,61 @@ plot.activity <- function(x,
   }
 
   # Argument check
-  if(!select %in% c("activity", "thresholds", 'states')){
-    stop("The 'select' argument must be either 'activity', 'thresholds', or 'states'.")
+  if(!select %in% c("activity", "activity_eval", "thresholds", 'states')){
+    stop("The 'select' argument must be either 'activity', 'activity_eval', 'thresholds', or 'states'.")
   }
 
   # Select plot type
 
   if(select == "activity"){
     # Input check
-    if(all(is.na(x$activity_data))){
-      stop("No activity data found.")
+
+    if (is.null(select_animal_id)){
+      select_animal_id <- as.integer(readline("Please select an animal_id: "))
     }
-    if(all(is.na(x$activity_thresholds_aggregated))){
-      stop("No activity thresholds found.")
+
+    if(all(is.na(x$activity_data[animal_id == select_animal_id,,]))){
+      stop("No activity data found for this animal.")
     }
-    y <- list("activity_data" = x$activity_data,
-              "activity_thresholds_aggregated" = x$activity_thresholds_aggregated,
-              "gps_data" = x$gps_data)
 
     # Pass to plotting function
-    plot_activity(activity = y$activity_data,
-                  thresholds = y$activity_thresholds_aggregated,
-                  gps = y$gps_data,
+    plot_activity(activity = x$activity_data[animal_id == select_animal_id,,],
+                  thresholds = if(all(is.na(x$activity_thresholds_aggregated))) {
+                                NA} else {
+                                x$activity_thresholds_aggregated[animal_id == select_animal_id,,]},
+                  gps = if(all(is.na(x$gps_data))) {
+                          NA} else {
+                          x$gps_data[animal_id == select_animal_id,,]},
+                  act.available_act = x$parameters$act.available_act,
+                  states_a = if(all(is.na(x$states_a))) {
+                              NA} else {
+                              x$states_a$active_states[animal_id == select_animal_id,,]},
+                  states_b = if(all(is.na(x$states_b))) {
+                              NA} else {
+                              x$states_b$active_states[animal_id == select_animal_id,,]},
+                  states_c = if(all(is.na(x$states_c))) {
+                              NA} else {
+                              x$states_c$active_states[animal_id == select_animal_id,,]},
+                  select_animal_id = select_animal_id,
                   ...)
   }
+
+  if(select == "activity_eval"){
+    # Input check
+    if(all(is.na(x$activity_data[animal_id == select_animal_id,,]))){
+      stop("No activity data found for this animal.")
+    }
+
+    # Pass to plotting function
+    plot_activity_eval(activity = x$activity_data[animal_id == select_animal_id,,],
+                       gps = if(all(is.na(x$gps_data))) {
+                         NA} else {
+                           x$gps_data[animal_id == select_animal_id,,]},
+                       act.available_act = x$parameters$act.available_act,
+                       select_animal_id = select_animal_id,
+                       ...)
+  }
+
 
   if(select == "thresholds"){
     # Input check

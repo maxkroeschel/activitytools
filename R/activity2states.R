@@ -7,7 +7,7 @@
 #' @param activity_gaps The data.table with the identified activity gaps.
 #' @param act
 #' @param act_ma
-#' @param width_act_ma
+#' @param act.width_ma
 #' @param threshold
 #' @param min_duration_active_state
 #'
@@ -31,7 +31,7 @@ activity2states <- function(activity,
                             activity_gaps = NULL,
                             act = 'act_xy',
                             act_ma = 'no',
-                            width_act_ma,
+                            act.width_ma,
                             threshold,
                             min_duration_active_state) {
 
@@ -53,7 +53,7 @@ activity2states <- function(activity,
     # calculate moving average if not supplied
     if (sum(names(activity) == act_ma) == 0 | act_ma == 'no') {
       activity[,(act_ma) := zoo::rollapply(get(act),
-                                            width = width_act_ma,
+                                            width = act.width_ma,
                                             FUN = function(x) round(mean(x, na.rm =T)),
                                             partial = T,
                                             align = "center"),]
