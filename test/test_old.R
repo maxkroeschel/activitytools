@@ -35,7 +35,7 @@ activity_data[, act_xy := act_x + act_y]
 
 activity_data <- smooth_activity(activity = activity_data,
                                  act = 'act_xy',
-                                 width_act_ma = 2,
+                                 act.width_ma = 2,
                                  update_NA = TRUE)
 
 # identify and store data gaps in the activity data

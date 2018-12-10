@@ -3,17 +3,17 @@
 #' \code{smooth_activity} smoothes an activity variable within the
 #'   \code{$activity_data} that is part of an \code{activity} object by
 #'   calculating a moving average with window width specified by
-#'   \code{width_act_ma}.
+#'   \code{act.width_ma}.
 #'
 #' @param activity An object of class \code{activity}.
 #' @param act.act
-#' @param act.smooth_width_ma
+#' @param act.width_ma
 #' @param update_NA
 #' @return  An object of class \code{activity}.
 #' @examples
 #' activity_data <- smooth_activity_data(activity = activity_data,
 #'                                           act = 'act_xy',
-#'                                           width_act_ma = 2,
+#'                                           act.width_ma = 2,
 #'                                           update_NA = FALSE)
 #' @import data.table
 #' @export
@@ -21,7 +21,7 @@
 
 smooth_activity <- function(activity,
                             act.act = NULL,
-                            act.smooth_width_ma = NULL,
+                            act.width_ma = NULL,
                             update_NA = TRUE) {
 
   # Type check
@@ -36,19 +36,19 @@ smooth_activity <- function(activity,
 
   # Extract parameters from activity object
   parameters <- get_parameters(x = activity,
-                               parameters = c("act.act", "act.smooth_width_ma"))
+                               parameters = c("act.act", "act.width_ma"))
   act <- parameters$act.act
-  width_act_ma <- parameters$act.smooth_width_ma
+  act.width_ma <- parameters$act.width_ma
 
   # Get activity data from activity object
   activity_data <- activity$activity_data
 
   activity_data <- activity_data[order(animal_tag, ts),,]
 
-  column_name <- paste(act,"_ma", width_act_ma, sep = "")
+  column_name <- paste(act,"_ma", act.width_ma, sep = "")
   # calculate moving average over act_xy
   activity_data[, (column_name) :=
-               as.integer(zoo::rollapply(get(act), width = width_act_ma,
+               as.integer(zoo::rollapply(get(act), width = act.width_ma,
                                     FUN = function(x) round(mean(x, na.rm =T)),
                                                      partial = T, align = "center")),
                 by = animal_tag]

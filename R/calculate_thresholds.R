@@ -50,13 +50,13 @@ calculate_thresholds <- function(activity,
   # Extract parameters from activity object
   parameters <- get_parameters(x = activity,
                                parameters = c("act.act",
-                                              "act.smooth_width_ma",
+                                              "act.width_ma",
                                               "thresh.n_runs",
                                               "thresh.window_width_around_day",
                                               "thresh.n_thresholds",
                                               "thresh.min_bin_width",
                                               "states.min_duration_active"))
-  parameters$act_ma <- paste(parameters$act.act,"_ma", parameters$act.smooth_width_ma, sep = "")
+  parameters$act_ma <- paste(parameters$act.act,"_ma", parameters$act.width_ma, sep = "")
 
   # Get activity data and gaps from activity object
   activity_data <- activity$activity_data
@@ -82,7 +82,12 @@ calculate_thresholds <- function(activity,
   # aggregate activity thresholds
   activity_thresholds_aggregated <- aggregate_thresholds(thresholds = activity_thresholds_raw)
 
+  activity_thresholds_raw<- split_animaltag(activity_thresholds_raw)
+  activity_thresholds_aggregated <- split_animaltag(activity_thresholds_aggregated)
+
   setcolorder(activity_thresholds_raw, c("animal_tag",
+                                         "animal_id",
+                                         "tag_code",
                                      "day",
                                      "threshold_period",
                                      "threshold_a",
@@ -94,6 +99,8 @@ calculate_thresholds <- function(activity,
                                      "warning"))
 
   setcolorder(activity_thresholds_aggregated, c("animal_tag",
+                                                "animal_id",
+                                                "tag_code",
                                                  "threshold_period",
                                                  "threshold_a",
                                                  "threshold_a_se",

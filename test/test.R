@@ -18,7 +18,7 @@ activity_data$act_xy <- activity_data$act_x + activity_data$act_y
 
 pars <- list(act.act = "act_xy",
              act.reg_minutes = 5,
-             act.smooth_width_ma = 2,
+             act.width_ma = 2,
              thresh.n_runs = 1,
              thresh.window_width_around_day = 3,
              thresh.n_thresholds = c(25:35),

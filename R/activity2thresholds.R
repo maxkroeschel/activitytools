@@ -169,7 +169,7 @@ do.call("rbind",
                                   act = act,
                                   act_ma = act_ma,
                                   #ts,
-                                  #width_act_ma = 2,
+                                  #act.width_ma = 2,
                                   threshold = i_threshold_seq,
                                   min_duration_active_state = min_duration_active_state))
         names(ls) <- threshold_seq
