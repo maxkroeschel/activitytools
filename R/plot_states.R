@@ -16,13 +16,14 @@
 plot_states <- function(active_states,
                         prop_time_active,
                         gps = NULL){
+ oldpar <- par(no.readonly=TRUE)
+  # on.exit(par(oldpar))
+  #
 
   if(all(is.na(gps))){
     gps <- NULL
   }
 
-  oldpar <- par(no.readonly=TRUE)
-  on.exit(par(oldpar))
 
   manipulate::manipulate({
     d_animal_id <- unlist(strsplit(d_animal_tag, split = "_"))[1]
@@ -135,12 +136,11 @@ plot_states <- function(active_states,
               pch = 20,  cex =0.5, col = "blue", lwd = 1)
         lines(tmp_prop_time_active$total *100 ,tmp_prop_time_active$date_sr, type = "b",
               pch = 20, cex =0.5, col = "black", lwd = 1)}
-
     axis(1)
     rect(0,min(date_seq)-0.45,100,max(date_seq+0.45))
-    #par(mar = par_default$mar, mfrow = par_default$mfrow)
+    par(mar = oldpar$mar, mfrow = oldpar$mfrow)
     },
-
     d_animal_tag = manipulate::picker(as.list(active_states[,unique(animal_tag),])),
     add_gps = manipulate::checkbox(label = "add GPS " ,initial = FALSE)
-  )}
+  )
+}
