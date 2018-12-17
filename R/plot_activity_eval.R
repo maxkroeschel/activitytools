@@ -114,7 +114,7 @@ if (all(is.na(gps))) {
   plot_state  = manipulate::checkbox(initial = FALSE),
   width_ma = manipulate::slider(min = 1, max = 60, step = 1, initial = 3),
   threshold = manipulate::slider(min = 0, max = 150, step = 1, initial = 0),
-  min_duration_active = manipulate::slider(min = 0, max = 150, step = 5, initial = 5)
+  min_duration_active = manipulate::slider(min = 0, max = 150, step = 1, initial = 5)
 )
   } else if (!all(is.na(gps))) {
 
@@ -231,7 +231,7 @@ if (all(is.na(gps))) {
     plot_state  = manipulate::checkbox(initial = FALSE),
     width_ma = manipulate::slider(min = 1, max = 60, step = 1, initial = 3),
     threshold = manipulate::slider(min = 0, max = 150, step = 1, initial = 0),
-    min_duration_active = manipulate::slider(min = 0, max = 150, step = 5, initial = 5)
+    min_duration_active = manipulate::slider(min = 0, max = 150, step = 1, initial = 5)
     )
   }
 }

@@ -41,7 +41,7 @@ activity2states <- function(activity,
     return(data.table("state_id" = integer(),
                       "to_active" = as.POSIXct(character()),
                       "end_active" = as.POSIXct(character()),
-                      "duration" = as.difftime(character(), units = "mins"),
+                      "duration" = integer(), # as.difftime(character(), units = "mins"),
                       "act_mean" = numeric(),
                       "act_var" = numeric()))
 
@@ -97,10 +97,9 @@ activity2states <- function(activity,
                        end_active_num = as.numeric(which(diff(c(-1,get(act_ma),-1) >= threshold) == -1)-1)),]
 
     # calculate duration of active periods
-    active_states[, duration := difftime(end_active, to_active, units = "mins"),]
-
+    active_states[, duration := end_active_num - to_active_num + 1,] # difftime(end_active, to_active, units = "mins"),]
     # remove active states that are shorter than the minimum duration of active states
-    active_states <- active_states[duration >= as.difftime(min_duration_active_state, units = "mins"),,]
+    active_states <- active_states[duration >= min_duration_active_state,,] # as.difftime(min_duration_active_state, units = "mins"),,]
 
     # find the exact transition points
 
@@ -109,7 +108,7 @@ activity2states <- function(activity,
       return(data.table("state_id" = integer(),
                         "to_active" = as.POSIXct(character()),
                         "end_active" = as.POSIXct(character()),
-                        "duration" = as.difftime(character(), units = "mins"),
+                        "duration" = integer(), # as.difftime(character(), units = "mins"),
                         "act_mean" = numeric(),
                         "act_var" = numeric()))
     } else {
@@ -137,6 +136,14 @@ activity2states <- function(activity,
                       max(ts_vector[to_active_num:end_active_num][
                         activity_vector[to_active_num:end_active_num] >= threshold]),
                     by = 1:nrow(active_states)]
+      active_states[,to_active_num1 :=
+                      min((to_active_num:end_active_num)[
+                        activity_vector[to_active_num:end_active_num] >= threshold]),
+                    by = 1:nrow(active_states)]
+      active_states[,end_active_num1 :=
+                      max((to_active_num:end_active_num)[
+                        activity_vector[to_active_num:end_active_num] >= threshold]),
+                    by = 1:nrow(active_states)]
       active_states[,act_mean :=
                       round(mean(activity_vector[to_active_num:end_active_num][
                         activity_vector[to_active_num:end_active_num] >= threshold], na.rm = T)),
@@ -148,16 +155,16 @@ activity2states <- function(activity,
 
 
       # refresh the duration
-      active_states[, duration := round(difftime(end_active, to_active, units = "mins")),]
+      active_states[, duration := end_active_num1 - to_active_num1 + 1,] # difftime(end_active, to_active, units = "mins"),]
       # remove active states that are shorter than the minimum duration of active states
-      active_states <- active_states[duration >= as.difftime(min_duration_active_state, units = "mins"),,]
+      active_states <- active_states[duration >= min_duration_active_state,,] # as.difftime(min_duration_active_state, units = "mins"),,]
 
     if (nrow(active_states) == 0) {
         # return an empty table
         return(data.table("state_id" = integer(),
                           "to_active" = as.POSIXct(character()),
                           "end_active" = as.POSIXct(character()),
-                          "duration" = as.difftime(character(), units = "mins"),
+                          "duration" = integer(), #as.difftime(character(), units = "mins"),
                           "act_mean" = numeric(),
                           "act_var" = numeric()))
       } else {
