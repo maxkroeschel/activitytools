@@ -195,8 +195,6 @@ do.call("rbind",
           1- prop_state_active[1,"prop_state_active"]
 
       # threshold_a = user defined threshold
-        # a <- 0.05
-        # threshold_a  <- threshold_seq[min(which(prop_state_active$firstdiff < a))-1]
         a <- threshold_a.f(prop_state_active$firstdiff)
         threshold_a <- ceiling(max(1,threshold_seq[ min(which(prop_state_active$firstdiff <= a))-1]))
 
@@ -216,27 +214,32 @@ do.call("rbind",
           plot(density(i_activity[,get(act_ma)], na.rm=T),
                xlab = act_ma,
                main = paste("animal_tag: ", x_animal_tag, "  -  day: ", i_day, sep = ""),
-               lwd = 2, xlim = c(-10,250))
+               lwd = 2,
+               xlim = c(-10, max_seq + max_seq*0.25))
           abline(v=threshold_seq, col = "black")
-          abline(v=threshold_a, col = "blue", lty = 2)
+          abline(v=threshold_a, col = "orange", lty = 2)
           abline(v=threshold_b, col = "purple", lty = 2)
-          abline(v=threshold_c, col = "green", lty = 2)
+          abline(v=threshold_c, col = "cyan2", lty = 2)
           abline(h = 0)
-          text(x = 170, y = 0, adj = c(0,-1),
-               labels = paste('n_thresholds   = ', temp_n_thresholds,
-                              '\nbin_width = ', temp_bin_width,
-                              '\nwarnings =  ', temp_warning, sep = ""), col = "black")
+          # text(x = max_seq + max_seq*0.035, y = 0, adj = c(0,-1),
+          #      labels = paste('n_thresholds   = ', temp_n_thresholds,
+          #                     '\nbin_width = ', temp_bin_width,
+          #                     '\nwarnings =  ', temp_warning, sep = ""), col = "black")
 
           par(mar = c(6.1,4.1,3.1,2.1))
           plot(prop_state_active$threshold, prop_state_active$firstdiff,
                type = "h", xlab = expression('thresholds (t'['i']*')'), ylab = "dPTA",
-               xlim = c(0,150),ylim = c(0,0.3))
-          points(threshold_a, a, col  = "blue")
+               xlim = c(-10, max_seq + max_seq*0.25),
+               ylim = c(0,sort(prop_state_active$firstdiff,
+                                                      decreasing = TRUE)[2] +
+                          sort(prop_state_active$firstdiff,
+                               decreasing = TRUE)[2]*0.3))
+          points(threshold_a, a, col  = "orange")
           points(threshold_b, b, col  = "purple")
-          points(threshold_c, c, col  = "green")
-          abline(h = a, col = "blue", lty = 2)
+          points(threshold_c, c, col  = "cyan2")
+          abline(h = a, col = "orange", lty = 2)
           abline(h = b, col = "purple", lty = 2)
-          abline(h = c, col = "green", lty = 2)
+          abline(h = c, col = "cyan2", lty = 2)
           par(mar = c(5.1,4.1,4.1,2.1), mfrow = c(1,1))
           }
 

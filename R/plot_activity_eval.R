@@ -101,9 +101,9 @@ if (all(is.na(gps))) {
       for (i in 1:nrow(temp_active_states)){
         lines(c(temp_active_states[i,to_active],
                 temp_active_states[i, end_active]),
-                rep(threshold,2), lwd = 5, col = "cyan2")}}
+                rep(threshold,2), lwd = 5, col = "black")}}
     }
-   abline(h = threshold, lty = 2, col = "cyan2")
+   abline(h = threshold, lty = 2, col = "black")
 },
   act = manipulate::picker(as.list(act.available_act)),
   d_day = manipulate::picker(label = "day", as.list(as.character(unique(
@@ -216,9 +216,9 @@ if (all(is.na(gps))) {
           for (i in 1:nrow(temp_active_states)){
             lines(c(temp_active_states[i,to_active],
                     temp_active_states[i, end_active]),
-                  rep(threshold,2), lwd = 5, col = "cyan2")}}
+                  rep(threshold,2), lwd = 5, col = "black")}}
       }
-      abline(h = threshold, lty = 2, col = "cyan2")
+      abline(h = threshold, lty = 2, col = "black")
     },
     act = manipulate::picker(as.list(act.available_act)),
     d_day = manipulate::picker(label = "day", as.list(as.character(unique(
