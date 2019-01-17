@@ -8,6 +8,7 @@
 #'
 #' @param activity An object of class \code{activity}.
 #' @param act
+#' @param reg_minutes
 #' @param thresh.n_runs
 #' @param thresh.window_width_around_day
 #' @param thresh.n_thresholds
@@ -21,7 +22,8 @@
 #' @export
 
 calculate_thresholds <- function(activity,
-                                act = NULL,
+                                act.act = NULL,
+                                act.reg_minutes = NULL,
                                 thresh.n_runs = NULL,
                                 thresh.window_width_around_day = NULL,
                                 thresh.n_thresholds = NULL,
@@ -51,6 +53,7 @@ calculate_thresholds <- function(activity,
   parameters <- get_parameters(x = activity,
                                parameters = c("act.act",
                                               "act.width_ma",
+                                              "act.reg_minutes",
                                               "thresh.n_runs",
                                               "thresh.window_width_around_day",
                                               "thresh.n_thresholds",
@@ -68,6 +71,7 @@ calculate_thresholds <- function(activity,
                         activity_gaps = activity$data_gaps,
                         act = parameters$act.act,
                         act_ma = parameters$act_ma,
+                        reg_minutes = parameters$act.reg_minutes,
                         n_runs = parameters$thresh.n_runs,
                         window_width_around_day = parameters$thresh.window_width_around_day,
                         n_thresholds = parameters$thresh.n_thresholds,
@@ -82,7 +86,7 @@ calculate_thresholds <- function(activity,
   # aggregate activity thresholds
   activity_thresholds_aggregated <- aggregate_thresholds(thresholds = activity_thresholds_raw)
 
-  activity_thresholds_raw<- split_animaltag(activity_thresholds_raw)
+  activity_thresholds_raw <- split_animaltag(activity_thresholds_raw)
   activity_thresholds_aggregated <- split_animaltag(activity_thresholds_aggregated)
 
   setcolorder(activity_thresholds_raw, c("animal_tag",

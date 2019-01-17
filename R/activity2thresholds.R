@@ -8,6 +8,7 @@
 #'    data (return of function \code{\link{identify_activity_gaps}}.
 #' @param act a
 #' @param act_ma a
+#' @param reg_minutes
 #' @param n_runs a
 #' @param window_width_around_day a
 #' @param n_thresholds a
@@ -21,6 +22,7 @@
 #'                               activity_gaps = activity_data_gaps,
 #'                               act = 'act_xy',
 #'                               act_ma = 'act_xy_ma2',
+#'                               reg_minutes = 5,
 #'                               n_runs = 1,
 #'                               window_width_around_day = 3,
 #'                               n_thresholds = c(25:35),
@@ -39,6 +41,7 @@
                                   activity_gaps,
                                   act,
                                   act_ma,
+                                  reg_minutes,
                                   n_runs,
                                   window_width_around_day,
                                   n_thresholds,
@@ -109,10 +112,11 @@ do.call("rbind",
         i_activity <- x_activity[day >= as.Date(i_day) - lubridate::days(window_width_around_day) &
                                         day <= as.Date(i_day) + lubridate::days(window_width_around_day ),]
 
-  # check if 1) the data set contains enough data points (enough means >288) and
+  # check if 1) the data set contains not enough data points (enough means data points should at
+  #             least cover 20 hours) and
   #          2) if all data are equal to 0
   # --> end currend loop and return an empty data.frame with a warning message
-        if ((i_activity[!is.na(get(act_ma)),.N,] < 288) |
+        if ((i_activity[!is.na(get(act_ma)),.N,] < 1200/reg_minutes) |
              (sum(i_activity[!is.na(get(act_ma)),get(act_ma),]) == 0)) {
                return(data.table("animal_tag" = x_animal_tag,
                                  "day" = i_day,
@@ -152,6 +156,8 @@ do.call("rbind",
 
   # calculate the increment of the threshold sequence
     temp_bin_width <- max(min_bin_width, round((max_seq - min_seq)/temp_n_thresholds))
+    if (temp_bin_width == min_bin_width) {
+      temp_n_thresholds <- floor((max_seq - min_seq)/temp_bin_width)}
 
   # calculate the final threshold sequence
     threshold_seq <- seq(from = min_seq,
