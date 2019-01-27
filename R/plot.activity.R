@@ -5,7 +5,7 @@
 #' @param x An object of class \code{activity}. Depending on choice of plot, it
 #'   should containing \code{$ctivity_data} or aggregated activity thresholds
 #'   (\code{$activity_thresholds_aggregated}), and optionally \code{gps_data}.
-#' @param select Type of plot, either 'activity' or 'thresholds'.
+#' @param select Type of plot, either 'activity', 'activity_eval', 'thresholds' or 'thresholds'.
 #' @param animal_id
 #' @param tag_code
 #' @return
