@@ -54,7 +54,6 @@ calculate_states <- function(activity,
                                               "thresh.n_runs",
                                               "thresh.window_width_around_day",
                                               "thresh.n_thresholds",
-                                              "thresh.min_bin_width",
                                               "states.min_duration_active"))
   parameters$act_ma <- paste(parameters$act.act,"_ma", parameters$act.width_ma, sep = "")
 

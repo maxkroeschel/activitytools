@@ -27,7 +27,8 @@ thresholds2states <- function(parameters,
                               threshold_par) {
 
   return(do.call("rbind",
-    lapply(thresholds[,as.character(unique(animal_tag))],
+    lapply(thresholds[!is.na(get(threshold_par)),
+                             as.character(unique(animal_tag)), ],
              function(d_animal_tag) {
 
     print(paste("animal_tag: ",d_animal_tag, "  processing"))

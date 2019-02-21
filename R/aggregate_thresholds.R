@@ -19,12 +19,12 @@ aggregate_thresholds <- function(thresholds) {
   will be aggregated.")
   } else {
   thresholds[!is.na(threshold_a),
-            .(threshold_a = round(mean(threshold_a)),
-              threshold_a_se = round(sd(threshold_a)/sqrt(.N),2),
-              threshold_b = round(mean(threshold_b)),
-              threshold_b_se = round(sd(threshold_b)/sqrt(.N),2),
-              threshold_c = round(mean(threshold_c)),
-              threshold_c_se = round(sd(threshold_c)/sqrt(.N),2)),
+            .(threshold_a = round(mean(threshold_a, na.rm = T)),
+              threshold_a_se = round(sd(threshold_a, na.rm = T)/sqrt(.N),2),
+              threshold_b = round(mean(threshold_b, na.rm = T)),
+              threshold_b_se = round(sd(threshold_b, na.rm = T)/sqrt(.N),2),
+              threshold_c = round(mean(threshold_c, na.rm = T)),
+              threshold_c_se = round(sd(threshold_c, na.rm = T)/sqrt(.N),2)),
              by = .(animal_tag,
                     threshold_period)]
     }
