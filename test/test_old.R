@@ -58,7 +58,8 @@ activity_thresholds <-
                                  n_runs = 1,
                                  window_width_around_day = 3,
                                  n_thresholds = c(25:35),
-                                 min_bin_width = 1,
+                                 thresh.resting_range_limit = 20,
+                                 thresh.threshold_range_limit = 80,
                                  min_duration_active_state = 10,
                                  plot_summary = TRUE))
 

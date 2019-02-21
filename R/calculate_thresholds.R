@@ -12,7 +12,8 @@
 #' @param thresh.n_runs
 #' @param thresh.window_width_around_day
 #' @param thresh.n_thresholds
-#' @param thresh.min_bin_width
+#' @param thresh.resting_range_limit
+#' @param thresh.threshold_range_limit
 #' @param states.min_duration_active
 #' @param plot_summary
 #' @return  An object of class \code{activity}.
@@ -24,12 +25,13 @@
 calculate_thresholds <- function(activity,
                                 act.act = NULL,
                                 act.reg_minutes = NULL,
-                                thresh.n_runs = NULL,
+                                thresh.n_runs = 1,
                                 thresh.window_width_around_day = NULL,
                                 thresh.n_thresholds = NULL,
-                                thresh.min_bin_width = NULL,
+                                thresh.resting_range_limit = 0.2,
+                                thresh.threshold_range_limit = 0.8,
                                 states.min_duration_active = NULL,
-                                plot_summary) {
+                                plot_summary = FALSE) {
 
   # Type check
   if(!is(activity, "activity")){
@@ -57,7 +59,8 @@ calculate_thresholds <- function(activity,
                                               "thresh.n_runs",
                                               "thresh.window_width_around_day",
                                               "thresh.n_thresholds",
-                                              "thresh.min_bin_width",
+                                              "thresh.resting_range_limit",
+                                              "thresh.threshold_range_limit",
                                               "states.min_duration_active"))
   parameters$act_ma <- paste(parameters$act.act,"_ma", parameters$act.width_ma, sep = "")
 
@@ -75,9 +78,10 @@ calculate_thresholds <- function(activity,
                         n_runs = parameters$thresh.n_runs,
                         window_width_around_day = parameters$thresh.window_width_around_day,
                         n_thresholds = parameters$thresh.n_thresholds,
-                                   min_bin_width = parameters$thresh.min_bin_width,
-                                   min_duration_active_state = parameters$states.min_duration_active,
-                                   plot_summary = plot_summary)
+                        resting_range_limit = parameters$thresh.resting_range_limit,
+                        threshold_range_limit = parameters$thresh.threshold_range_limit,
+                        min_duration_active_state = parameters$states.min_duration_active,
+                        plot_summary = plot_summary)
 
   # Create period_id inside the tables activity_thresholds and activity_data
   activity_thresholds_raw[, threshold_period := ts2yearweek(day),]
