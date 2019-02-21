@@ -16,14 +16,15 @@ plot_thresholds <- function(thresholds){
 
 manipulate::manipulate({
   thresholds[, threshold_period := factor(threshold_period),]
-
+  y_max <- thresholds[animal_tag == d_animal_tag ,
+                      max(threshold_a + 2*threshold_a_se, na.rm = T) * 1.05]
   plot(thresholds[animal_tag == d_animal_tag, as.numeric(threshold_period) - 0.25],
        thresholds[animal_tag == d_animal_tag, threshold_a],
-       ylim = c(0,100), col = "orange", pch = 19,
-       cex = 0.7, axes = F, xlab = "", ylab = "threshold",
+       ylim = c(0, y_max), col = "orange", pch = 19,
+       cex = 0.7, cex.axes = 0.8, axes = F, xlab = "", ylab = "Thresholds",
        main = paste("Thresholds of animal_tag:   ",
                     d_animal_tag, sep = ""))
-  axis(2)
+  axis(2, cex.axes = 0.8)
 
   xaxis_labels_range <- thresholds[animal_tag == d_animal_tag,
                                             .(min(as.numeric(threshold_period)),
@@ -34,8 +35,8 @@ manipulate::manipulate({
   } else {d_xaxis_labels <- xaxis_labels_range$V1 : xaxis_labels_range$V2}
   axis(1, at = d_xaxis_labels,
        labels = levels(thresholds[,threshold_period,])[d_xaxis_labels],
-       las = 2, cex = 0.5 )
-  abline(h=seq(0,100, by = 5), lty = 2, col = "darkgrey")
+       las = 2, cex.axis = 0.7 )
+  abline(h=seq(0, y_max, by = 5), lty = 2, col = "darkgrey")
 
   # add threshold_b
   points(thresholds[animal_tag == d_animal_tag, as.numeric(threshold_period) - 0.15],
