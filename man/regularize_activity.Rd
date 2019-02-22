@@ -4,25 +4,28 @@
 \alias{regularize_activity}
 \title{Regularize activity data}
 \usage{
-regularize_activity(activity, minutes)
+regularize_activity(activity, act.reg_minutes = NULL)
 }
 \arguments{
-\item{activity}{A data.table with the activity data. The following columns
-should be present: 'animal_tag', 'ts', 'act_x' and 'act_y'.}
+\item{activity}{An object of class \code{activity}.}
 
-\item{minutes}{The regular interval in minutes.}
+\item{act.reg_minutes}{The regular interval in minutes.}
 }
 \value{
-The original data.table with regularized timestamps in column 'ts'.
+The original activity object with regularized timestamps for its
+  \code{$acticity_data} in column 'ts'.
 }
 \description{
-\code{regularize activity} regularizes the timestamps in column 'ts' to
+\code{regularize_activity} regularizes the timestamps within the
+  \code{$acticity_data} of an \code{activity} object (column 'ts') to
   regular intervals for each animal_tag. The interval is defined by the
-  parameter \code{minutes}. The following steps are performd:
-  \enumerate{
+  parameter \code{minutes}. The following steps are performed:
+}
+\details{
+\enumerate{
     \item Round each timestamp to the nearsed regular timestamp.
     \item When several data points occur with the same regularized timestamp,
-       aggregate these by calculation the mean of the activity values.
+       aggregate these by calculating the mean of the activity values.
     \item Insert data points for missing regularized timestamps with
       NA-activity values .
     }

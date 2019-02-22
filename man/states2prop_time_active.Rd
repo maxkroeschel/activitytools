@@ -5,8 +5,8 @@
 \title{Calculate proportion of time in state active}
 \usage{
 states2prop_time_active(active_states, activity_gaps, gps = NULL,
-  pos = NULL, dayshift = "sunrise", dawn_degree = 12, period = "day",
-  max_na = 0)
+  pos = NULL, dayshift = "sunrise", dawn_degree = 12,
+  period = "day", max_na = 0)
 }
 \arguments{
 \item{active_states}{A data.table with the predicted active states (return
@@ -34,7 +34,7 @@ sun below the horizon at dawn and dusk.}
 proportion of time in state active is aggregated.}
 
 \item{max_na}{An integer with the maximum number of minutes with NA
-that are alloes for each period. When this threshold is crossed proportion of
+that are allowed for each period. When this threshold is crossed proportion of
 time in state active will be set to NA for this period.}
 }
 \value{

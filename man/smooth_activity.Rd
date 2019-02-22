@@ -4,14 +4,20 @@
 \alias{smooth_activity}
 \title{Smooth activity data}
 \usage{
-smooth_activity(activity, act, act.width_ma, update_NA = TRUE)
+smooth_activity(activity, act.act = NULL, act.width_ma = NULL,
+  update_NA = TRUE)
+}
+\arguments{
+\item{activity}{An object of class \code{activity}.}
 }
 \value{
-A data.table
+An object of class \code{activity}.
 }
 \description{
-\code{smooth_activity_data} smoothes an activity variable by calculating a
-  moving average with window width specified by \code{act.width_ma}.
+\code{smooth_activity} smoothes an activity variable within the
+  \code{$activity_data} that is part of an \code{activity} object by
+  calculating a moving average with window width specified by
+  \code{act.width_ma}.
 }
 \examples{
 activity_data <- smooth_activity_data(activity = activity_data,

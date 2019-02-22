@@ -1,7 +1,7 @@
 Package: activitytools
 Type: Package
 Title: Tools to analyse and visualize activity data in R.
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: person("Kröschel", "Max", email = "max.kroeschel@wildlife.uni-freiburg.de",
   role = c("aut", "cre"))
 Maintainer: The package maintainer <max.kroeschel@wildlife.uni-freiburg.de>
@@ -11,7 +11,7 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 BugReports: https://github.com/maxkroeschel/activitytools
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Imports: 
     manipulate,
     zoo,

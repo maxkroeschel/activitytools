@@ -4,9 +4,9 @@
 \alias{activity2thresholds}
 \title{Activity2thresholds}
 \usage{
-activity2thresholds(activity, activity_gaps, act, act_ma, n_runs,
-  window_width_around_day, n_thresholds, min_bin_width,
-  min_duration_active_state, plot_summary)
+activity2thresholds(activity, activity_gaps, act, act_ma, reg_minutes,
+  n_runs, window_width_around_day, n_thresholds, resting_range_limit,
+  threshold_range_limit, min_duration_active_state, plot_summary)
 }
 \arguments{
 \item{activity}{A data.table with the activity data. The following columns
@@ -15,7 +15,7 @@ should be present: 'animal_tag' and 'ts'.}
 \item{activity_gaps}{A data.table with the identified gaps in the activity
 data (return of function \code{\link{identify_activity_gaps}}.}
 
-\item{}{a}
+\item{act}{a}
 
 \item{act_ma}{a}
 
@@ -25,11 +25,13 @@ data (return of function \code{\link{identify_activity_gaps}}.}
 
 \item{n_thresholds}{a}
 
-\item{min_bin_width}{a}
+\item{resting_range_limit}{a}
+
+\item{threshold_range_limit}{a}
 
 \item{min_duration_active_state}{a}
 
-\item{plot}{summary}
+\item{plot_summary}{}
 }
 \value{
 Data.table with the ...
@@ -42,11 +44,13 @@ activity_thresholds <- activity2thresholds(activity = activity_data,
                               activity_gaps = activity_data_gaps,
                               act = 'act_xy',
                               act_ma = 'act_xy_ma2',
+                              reg_minutes = 5,
                               n_runs = 1,
                               window_width_around_day = 3,
                               n_thresholds = c(25:35),
-                              min_bin_width = 1,
-                              min_duration_active_state = 10,
+                              resting_range_limit = 0.2,
+                              threshold_range_limit = 0.8,
+                              min_duration_active_state = 2,
                               plot_summary = TRUE)
 
 }

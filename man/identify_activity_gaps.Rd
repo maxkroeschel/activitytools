@@ -2,23 +2,24 @@
 % Please edit documentation in R/identify_activity_gaps.R
 \name{identify_activity_gaps}
 \alias{identify_activity_gaps}
-\title{Identify data gaps in the activity data}
+\title{Identify gaps in the activity data}
 \usage{
-identify_activity_gaps(activity, act)
+identify_activity_gaps(activity, act.act = NULL)
 }
 \arguments{
-\item{activity}{A data.table with the activity data. The following columns
-should be present: 'animal_tag', 'ts' and the activity variable that is
-scanned for gaps (e.g. 'act_x').}
+\item{activity}{An object of class \code{activity}.}
 
 \item{act}{The activity variable to scan for gaps.}
 }
 \value{
-A data.table with the start- and end-timestamps of the identified
-  gaps.
+An object of class \code{activity} containing \code{$activity_gaps}
+  in which the start- and end-timestamps of the identified gaps are
+  specified.
 }
 \description{
-\code{identify_activity_gaps} searches for data gaps in the activity data.
+\code{identify_activity_gaps} searches for data gaps in the
+  \code{$activity_data} of an \code{activity} object, then stores the gaps
+  in the object as \code{$activity_gaps}
 }
 \examples{
 activity_data_gaps <- identify_activity_gaps(activity = activity_data,

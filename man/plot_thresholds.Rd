@@ -7,8 +7,7 @@
 plot_thresholds(thresholds)
 }
 \arguments{
-\item{thresholds}{A data.table with the aggregated thresholds (return of
-\code{\link{aggregate_thresholds}}).}
+\item{thresholds}{}
 }
 \description{
 \code{plot_thresholds} plots the calculated activity thresholds against the

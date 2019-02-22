@@ -21,10 +21,10 @@ manipulate::manipulate({
   plot(thresholds[animal_tag == d_animal_tag, as.numeric(threshold_period) - 0.25],
        thresholds[animal_tag == d_animal_tag, threshold_a],
        ylim = c(0, y_max), col = "orange", pch = 19,
-       cex = 0.7, cex.axes = 0.8, axes = F, xlab = "", ylab = "Thresholds",
+       cex = 0.7, cex.axis = 0.8, axes = F, xlab = "", ylab = "Thresholds",
        main = paste("Thresholds of animal_tag:   ",
                     d_animal_tag, sep = ""))
-  axis(2, cex.axes = 0.8)
+  axis(2, cex.axis = 0.8)
 
   xaxis_labels_range <- thresholds[animal_tag == d_animal_tag,
                                             .(min(as.numeric(threshold_period)),
@@ -35,7 +35,7 @@ manipulate::manipulate({
   } else {d_xaxis_labels <- xaxis_labels_range$V1 : xaxis_labels_range$V2}
   axis(1, at = d_xaxis_labels,
        labels = levels(thresholds[,threshold_period,])[d_xaxis_labels],
-       las = 2, cex.axis = 0.7 )
+       las = 2, cex.axis = 0.8 )
   abline(h=seq(0, y_max, by = 5), lty = 2, col = "darkgrey")
 
   # add threshold_b

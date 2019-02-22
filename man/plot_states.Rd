@@ -7,13 +7,9 @@
 plot_states(active_states, prop_time_active, gps = NULL)
 }
 \arguments{
-\item{active_states}{A data.table with the active states (return of function
-\code{\link{thresholds2states}}).}
+\item{states}{An object of class \code{activity}.}
 
-\item{prop_time_active}{A data.table with the proportion of time in state
-active (return of \code{\link{states2prop_time_active}})}
-
-\item{gps}{A data.table with the GPS-positions of the animals.}
+\item{threshold}{Type of thresholds. Must be one of \code{"a"}, \code{"b"}, \code{"c"}.}
 }
 \description{
 \code{plot_states} plots the active states and proportion of time in state

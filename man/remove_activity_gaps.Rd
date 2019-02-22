@@ -7,15 +7,12 @@
 remove_activity_gaps(activity, activity_gaps)
 }
 \arguments{
-\item{activity}{A data.table with the activity data. The following columns
-should be present: 'animal_tag' and 'ts'.}
-
-\item{activity_gaps}{The data.table with the identified activity gaps.}
+\item{activity}{An object of class \code{activity}.}
 }
 \description{
-\code{remove_activity_gaps} removes data gaps in the activity data. The data
-  gaps have to be identified before with the function
-  \code{\link{identify_activity_gaps}}.
+\code{remove_activity_gaps} removes data gaps in the \code{$activity_data}
+  of an \code{activity} object. The data gaps have to be identified before
+  with the function \code{\link{identify_activity_gaps}}.
 }
 \examples{
 activity_data <- remove_activity_gaps(activity = activity_data,

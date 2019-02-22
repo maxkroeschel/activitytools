@@ -4,7 +4,8 @@
 \alias{thresholds2states}
 \title{Thresholds2states}
 \usage{
-thresholds2states(activity, activity_gaps, thresholds, threshold_par)
+thresholds2states(parameters, activity, activity_gaps, thresholds,
+  threshold_par)
 }
 \arguments{
 \item{activity}{A data.table with the activity data. The following columns
