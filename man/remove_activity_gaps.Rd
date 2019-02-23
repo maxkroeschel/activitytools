@@ -2,19 +2,24 @@
 % Please edit documentation in R/remove_activity_gaps.R
 \name{remove_activity_gaps}
 \alias{remove_activity_gaps}
-\title{Remove activity gaps}
+\title{Identify, archive and remove gaps in the activity data}
 \usage{
-remove_activity_gaps(activity, activity_gaps)
+remove_activity_gaps(activity, act.act = NULL)
 }
 \arguments{
 \item{activity}{An object of class \code{activity}.}
+
+\item{act}{The activity variable to scan for gaps.}
+}
+\value{
+An object of class \code{activity} containing \code{$activity_gaps}
+  in which the start- and end-timestamps of the identified gaps are
+  specified.
 }
 \description{
-\code{remove_activity_gaps} removes data gaps in the \code{$activity_data}
-  of an \code{activity} object. The data gaps have to be identified before
-  with the function \code{\link{identify_activity_gaps}}.
+Identify, archive and remove gaps in the activity data
 }
 \examples{
-activity_data <- remove_activity_gaps(activity = activity_data,
-                                      activity_gaps = activity_data_gaps)
+activity_data_gaps <- remove_activity_gaps(activity = activity_data,
+                                           act = 'act_xy')
 }

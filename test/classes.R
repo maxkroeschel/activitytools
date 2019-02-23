@@ -14,8 +14,8 @@ pars <- list(act.act = "act_xy",
              tresh.n_runs = 1,
              thresh.window_width_around_day = 3,
              thresh.n_thresholds = c(25:35),
-             thresh.resting_range_limit = 20,
-             thresh.threshold_range_limit = 80,
+             thresh.resting_range_limit = 0.2,
+             thresh.threshold_range_limit = 0.8,
              states.min_duration_active = 10)
 # simple
 deer <- activity(activity_data = activity_data)
@@ -67,8 +67,8 @@ pars <- list(act.act = "act_xy",
              thresh.n_runs = 1,
              thresh.window_width_around_day = 3,
              thresh.n_thresholds = c(25:35),
-             thresh.resting_range_limit = 20,
-             thresh.threshold_range_limit = 80,
+             thresh.resting_range_limit = 0.2,
+             thresh.threshold_range_limit = 0.8,
              states.min_duration_active = 10,
              pta.pos = NULL,
              pta.dayshift = "dawn",
@@ -100,7 +100,6 @@ deer <- regularize_activity(deer)
 deer <- smooth_activity(deer)
 
 # Identify and remove activity gaps
-deer <- identify_activity_gaps(deer)
 deer <- remove_activity_gaps(deer)
 
 # Thresholds
@@ -174,8 +173,8 @@ deer <- calculate_thresholds(activity = deer,
                               thresh.n_runs = 1,
                               thresh.window_width_around_day = 3,
                               thresh.n_thresholds = c(25:35),
-                              thresh.resting_range_limit = 20,
-                              thresh.threshold_range_limit = 80,
+                              thresh.resting_range_limit = 0.2,
+                              thresh.threshold_range_limit = 0.8,
                               states.min_duration_active = 10,
                               plot_summary = TRUE)
 data("thresholds")
