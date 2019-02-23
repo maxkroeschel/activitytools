@@ -46,7 +46,7 @@ manipulate::manipulate({
   # add threshold_c
   points(thresholds[animal_tag == d_animal_tag, as.numeric(threshold_period) + 0.15],
          thresholds[animal_tag == d_animal_tag, threshold_c],
-         col = "green", cex = 0.5, pch = 19)
+         col = "cyan2", cex = 0.5, pch = 19)
 
 # add confidence intervals
   if (add_ci == TRUE) {
@@ -64,7 +64,7 @@ manipulate::manipulate({
            thresholds[animal_tag == d_animal_tag, threshold_c - 2* threshold_c_se],
            thresholds[animal_tag == d_animal_tag, as.numeric(threshold_period) + 0.15],
            thresholds[animal_tag == d_animal_tag, threshold_c + 2* threshold_c_se],
-           col = "green", code=3, angle=90, length=0.02)
+           col = "cyan2", code=3, angle=90, length=0.02)
   }
 
 },
