@@ -11,6 +11,7 @@
 #' @return
 #' @examples
 #' @import data.table
+#' @export
 
 plot.activity <- function(x,
                           select = "activity",
