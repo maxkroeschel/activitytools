@@ -55,9 +55,9 @@ plot_states <- function(active_states,
     par(mar = c(5.1, 6.1, 4.1, 0))
     plot(0,0, xlim = c(0,60*24),
          ylim = c(as.integer(min(date_seq))-0.5, as.integer(max(date_seq))+0.5),
-         type = "n", axes=FALSE, xlab = "time of day", ylab = "")
-    title(main = paste("animal_id: ", d_animal_id,
-                      "   -   tag_code: ",d_tag_code, sep = ""),
+         type = "n", axes=FALSE, xlab = "Time", ylab = "")
+    title(main = paste("Animal ID: ", d_animal_id,
+                      "   -   Tag code: ",d_tag_code, sep = ""),
           cex.main = 1.5)
 
       tmp_month <- seq(lubridate::ceiling_date(min(date_seq), unit = "months"),
@@ -111,7 +111,7 @@ plot_states <- function(active_states,
     par(mar = c(5.1, 0.5, 4.1, 1))
     plot(0,0, xlim = c(0,100),
          ylim = c(as.integer(min(date_seq))-0.5, as.integer(max(date_seq))+0.5),
-         type = "n", axes=FALSE, xlab = "proportion of time \n in state active (%)", ylab = "")
+         type = "n", axes=FALSE, xlab = "PTA (%)", ylab = "")
 
       abline(h=  as.integer(tmp_month), col = "black", lty=3)
 

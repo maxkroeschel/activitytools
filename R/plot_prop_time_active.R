@@ -10,7 +10,7 @@ manipulate({
   if (d_smooth == FALSE) {
     plot(d_prop_active[animal_id == d_animal_id, date_dawn,],
          d_prop_active[animal_id == d_animal_id, total,],
-         type = "l", ylim = c(0,1), xlab = "time", ylab = "prop_active",
+         type = "l", ylim = c(0,1), xlab = "Time", ylab = "PTA",
          axes = FALSE, xlim = c(x_start, x_end))
     abline(v=seq(x_start, x_end, by = "month"), lty = 2)
     lines(d_prop_active[animal_id == d_animal_id, date_dawn,],
@@ -30,7 +30,7 @@ manipulate({
     plot(d_prop_active[animal_id == d_animal_id, date_dawn,],
          rollapply(d_prop_active[animal_id == d_animal_id, total], width = window_width,
                    FUN = mean, partial = TRUE),
-         type = "l", ylim = c(0,1), xlab = "time", ylab = "prop_active",
+         type = "l", ylim = c(0,1), xlab = "Time", ylab = "PTA",
          axes = FALSE, xlim = c(x_start, x_end))
     abline(v=seq(x_start, x_end, by = "month"), lty = 2)
     lines(d_prop_active[animal_id == d_animal_id, date_dawn,],

@@ -66,15 +66,14 @@ if (all(is.na(gps))) {
          xlim = c(as.POSIXct(d_day, format = "%Y-%m-%d"),
                   as.POSIXct(d_day, format = "%Y-%m-%d") + lubridate::days(1)),
          ylim = c(0,d_ylim_max),
-         xlab = "time", ylab = act, xaxt = "n",
+         xlab = "Time", ylab = "Activity", xaxt = "n",
          frame.plot = F, col = "blue")
     axis.POSIXct(1, at = seq(as.POSIXct(d_day),
                              as.POSIXct(d_day) + lubridate::days(1), by = "hour"))
     text(x = as.POSIXct(d_day) + lubridate::hours(20), y = d_ylim_max-d_ylim_max*0.1,
-         labels = paste("animal_id", ":  ", select_animal_id,
-                        "\nday:  ", d_day,
-                        #"\nweek:  ",d_week,
-                        "\ngps present:  ", gps_present,
+         labels = paste("Animal ID", ":  ", select_animal_id,
+                        "\nDay:  ", d_day,
+                        "\nGPS present:  ", gps_present,
                         sep= ""))
 
 # plot moving average
@@ -147,15 +146,14 @@ if (all(is.na(gps))) {
            xlim = c(as.POSIXct(d_day, format = "%Y-%m-%d"),
                     as.POSIXct(d_day, format = "%Y-%m-%d") + lubridate::days(1)),
            ylim = c(0,d_ylim_max),
-           xlab = "time", ylab = act, xaxt = "n",
+           xlab = "Time", ylab = "Activity", xaxt = "n",
            frame.plot = F, col = "blue")
       axis.POSIXct(1, at = seq(as.POSIXct(d_day),
                                as.POSIXct(d_day) + lubridate::days(1), by = "hour"))
       text(x = as.POSIXct(d_day) + lubridate::hours(20), y = d_ylim_max-d_ylim_max*0.1,
-           labels = paste("animal_id", ":  ", select_animal_id,
-                          "\nday:  ", d_day,
-                          #"\nweek:  ",d_week,
-                          "\ngps present:  ", gps_present,
+           labels = paste("Animal ID", ":  ", select_animal_id,
+                          "\nDay:  ", d_day,
+                          "\nGPS present:  ", gps_present,
                           sep= ""))
 
       # add sunrise and sunset
