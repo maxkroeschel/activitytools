@@ -45,9 +45,9 @@ states2gps <- function(active_states,
 
   if (!is.null(activity_gaps) && nrow(activity_gaps)!=0) {
     for (j in 1:nrow(activity_gaps)) {
-      gps[animal_tag == activity_gaps[i, animal_tag,] &
-            ts >= activity_gaps[i, to_NA,] &
-            ts <= activity_gaps[i, end_NA,],
+      gps[animal_tag == activity_gaps[j, animal_tag,] &
+            ts >= activity_gaps[j, to_NA,] &
+            ts <= activity_gaps[j, end_NA,],
           active := NA, ]
     }
   }
