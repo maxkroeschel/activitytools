@@ -37,9 +37,8 @@ plot_states <- function(active_states,
       if (as.Date(tmp_active_states$to_active[i]) != as.Date(tmp_active_states$end_active[i])) {
         tmp_active_states <- rbind(tmp_active_states,
                                    data.frame("to_active"= lubridate::floor_date(tmp_active_states$end_active[i], "day"),
-                                              "end_active"= tmp_active_states$end_active[i],
-                                              "duration" = tmp_active_states$end_active[i] -
-                                                lubridate::floor_date(tmp_active_states$end_active[i], "day")), fill = TRUE)
+                                              "end_active"= tmp_active_states$end_active[i]
+                                              ), fill = TRUE)
         tmp_active_states$end_active[i] <-
           lubridate::floor_date(tmp_active_states$end_active[i], "day")-lubridate::seconds(1)}
     }
