@@ -52,11 +52,7 @@ remove_activity_gaps <- function(activity,
   activity$activity_gaps <- activity_gaps
 
   if (nrow(activity_gaps) > 0){
-    for (i in 1:nrow(activity_gaps)){
-      activity_data <-  activity_data[!(animal_tag == activity_gaps[i,animal_tag] &
-                                          ts >= activity_gaps[i,to_NA] &
-                                          ts <= activity_gaps[i,end_NA]),,]
-    }
+    activity_data <- activity_data[!is.na(get(act)),]
   }
   activity$activity_data <- activity_data[order(animal_tag, ts),,]
 
