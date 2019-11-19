@@ -51,6 +51,7 @@ calculate_states <- function(activity,
   parameters <- get_parameters(x = activity,
                                parameters = c("act.act",
                                               "act.width_ma",
+                                              "act.reg_minutes",
                                               "thresh.n_runs",
                                               "thresh.window_width_around_day",
                                               "thresh.n_thresholds",
@@ -100,6 +101,7 @@ calculate_states <- function(activity,
         activity[[states_t]]$gps_active <-
           states2gps(gps = activity$gps_data,
                      activity_gaps = activity$activity_gaps,
+                     reg_minutes = activity$parameters$act.reg_minutes,
                      active_states = activity[[states_t]]$active_states)
         print("..done!")
       }

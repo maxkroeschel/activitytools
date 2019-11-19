@@ -41,12 +41,10 @@ remove_activity_gaps <- function(activity,
                      end_NA = ts[which(diff(is.na(c(1,get(act),1))) == -1)-1]),
                   by = animal_tag]
   if (nrow(activity_gaps) > 0) {
-    activity_gaps[, animal_id := as.integer(unlist(strsplit(animal_tag, split = "_"))[1]),
-                   by = 1:length(animal_tag)]
-    activity_gaps[, tag_code := unlist(strsplit(animal_tag, split = "_"))[2],
-                   by = 1:length(animal_tag)]
+    activity_gaps[, animal_id := data.table::tstrsplit(animal_tag, split = "_")[1],]
+    activity_gaps[, tag_code := data.table::tstrsplit(animal_tag, split = "_")[2],]
   } else {
-    activity_gaps[, animal_id := as.integer(),][, tag_code := as.character()]
+    activity_gaps[, animal_id := as.character(),][, tag_code := as.character()]
   }
 
   activity$activity_gaps <- activity_gaps

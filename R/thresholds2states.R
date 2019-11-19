@@ -50,7 +50,7 @@ thresholds2states <- function(parameters,
                                             )
                                        })))
 
-    temp_active_states[, animal_id := as.integer(unlist(strsplit(d_animal_tag, split = "_"))[1]),]
+    temp_active_states[, animal_id := unlist(strsplit(d_animal_tag, split = "_"))[1],]
     temp_active_states[, tag_code := unlist(strsplit(d_animal_tag, split = "_"))[2],]
     temp_active_states[, animal_tag := d_animal_tag,]
 

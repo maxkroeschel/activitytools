@@ -13,6 +13,6 @@
 
 
 split_animaltag <- function(data) {
-  data[,animal_id := as.integer(unlist(data.table::tstrsplit(animal_tag, split = "_")[1])),]
-  data[,tag_code := tstrsplit(animal_tag, split = "_")[2],]
+  data[,animal_id := data.table::tstrsplit(animal_tag, split = "_")[1],]
+  data[,tag_code := data.table::tstrsplit(animal_tag, split = "_")[2],]
 }
