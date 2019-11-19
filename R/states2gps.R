@@ -21,6 +21,7 @@
 
 states2gps <- function(active_states,
                        activity_gaps = NULL,
+                       reg_minutes,
                        gps) {
   gps[, temp_ts := ts, ]
   setkey(gps, animal_tag, ts, temp_ts)
@@ -46,7 +47,7 @@ states2gps <- function(active_states,
   if (!is.null(activity_gaps) && nrow(activity_gaps)!=0) {
     for (j in 1:nrow(activity_gaps)) {
       gps[animal_tag == activity_gaps[j, animal_tag,] &
-            ts >= activity_gaps[j, to_NA,] &
+            ts > activity_gaps[j, to_NA,] - lubridate::minutes(reg_minutes) &
             ts <= activity_gaps[j, end_NA,],
           active := NA, ]
     }
