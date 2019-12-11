@@ -94,17 +94,20 @@ states2prop_time_active <- function(active_states,
 prop_time_active <-
 do.call("rbind",
   lapply(active_states[, unique(animal_tag),], function(i) {
-    print(paste("animal_id:", i, " processing"))
+   # print(paste("animal_id:", i, " processing"))
 
     temp_active_states <- active_states[animal_tag == i,,]
     temp_activity_gaps <- activity_gaps[animal_tag == i,,]
 
     deploy_start_ts <- trunc(temp_active_states[, min(to_active),], "mins")
     deploy_end_ts <- trunc(temp_active_states[, max(end_active),], "mins")
+    attr(deploy_start_ts, "tzone") <- NULL
+    attr(deploy_end_ts, "tzone") <- NULL
 
     animal_minutes <-
       data.table(minute = seq(deploy_start_ts, deploy_end_ts, by = "mins"),
                  active = 0)
+    attr(animal_minutes$minute, "tzone") <- NULL
     animal_minutes[,tmp_minute := minute]
     animal_minutes[,date := as.Date(minute)]
 
@@ -175,7 +178,8 @@ do.call("rbind",
                            day_seq + lubridate::days(1),
                            solarDep=c(0),
                            direction="dawn", POSIXct.out=TRUE)$time)
-
+  attr(nighttime$ts_dawn_plusone, "tzone") <- NULL
+  attr(nighttime$ts_sr_plusone, "tzone") <- NULL
   nighttime[,date_dawn := as.Date(ts_dawn)]
   nighttime[,date_sr := as.Date(ts_sr)]
 
@@ -366,7 +370,6 @@ if (period == "day") {
 
   temp_prop_time_active[, c("nr_na", "nr_mins") := NULL]
 
-  print("..done!")
   return(temp_prop_time_active)
   }
 )

@@ -64,6 +64,12 @@ plot_states <- function(active_states,
       abline(h=  as.integer(tmp_month), col = "black", lty=3)
       axis(1, at = seq(0,1440, by = 120),
            labels = paste(seq(0,24,by = 2),rep("00",12), sep =":"))
+      axis(2,at =  c(min(date_seq), min(tmp_month)),
+           labels= F, col.ticks = "white",
+           line = -0.5)
+      axis(2,at =  c(max(date_seq), max(tmp_month)),
+           labels= F, col.ticks = "white",
+           line = -0.5)
       axis(2,at =  as.integer(tmp_month),
            labels= F,
            line = -0.5)
@@ -116,10 +122,10 @@ plot_states <- function(active_states,
 
     for (i in seq(20,100,by = 20)) {lines(c(i,i),c(min(date_seq), max(date_seq)), lty=3)}
     #abline(v=seq(0,1,by = 0.2), col = "black", lty=3)
-    legend(x = c(-10,100), y = c(min(date_seq),min(date_seq)+lubridate::days(3)), yjust=0,
-           legend = c("total", "day", "night"),
-           fill = c("black", "orange", "blue"), horiz = TRUE,
-           cex = 0.9, bg = "white", box.col = "white", text.width = 2)
+    # legend(x = c(-10,100), y = c(min(date_seq),min(date_seq)+lubridate::days(3)), yjust=0,
+    #        legend = c("total", "day", "night"),
+    #        fill = c("black", "orange", "blue"), horiz = TRUE,
+    #        cex = 0.9, bg = "white", box.col = "white", text.width = 2)
 
     if ("date_dawn" %in% colnames(tmp_prop_time_active)) {
     lines(tmp_prop_time_active$day *100 ,tmp_prop_time_active$date_dawn, type = "b",

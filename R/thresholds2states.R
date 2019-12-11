@@ -31,7 +31,7 @@ thresholds2states <- function(parameters,
                              as.character(unique(animal_tag)), ],
              function(d_animal_tag) {
 
-    print(paste("animal_tag: ",d_animal_tag, "  processing"))
+   # print(paste("animal_tag: ",d_animal_tag, "  processing"))
 
     temp_active_states <-
       data.table(do.call("rbind",
@@ -69,7 +69,6 @@ thresholds2states <- function(parameters,
                        to_active := temp_active_states[mark == 1,to_active,],]
 
     temp_active_states <- temp_active_states[is.na(mark),,][,mark := NULL]
-    print("..done!")
     return(temp_active_states)
     }
     )
