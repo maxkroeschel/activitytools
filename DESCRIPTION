@@ -1,10 +1,10 @@
 Package: activitytools
 Type: Package
 Title: Tools to analyse and visualize activity data in R.
-Version: 0.0.0.9001
-Authors@R: person("Kröschel", "Max", email = "max.kroeschel@wildlife.uni-freiburg.de",
+Version: 0.0.0.9002
+Authors@R: person("Kröschel", "Max", email = "max.kroeschel@forst.bwl.de",
   role = c("aut", "cre"))
-Maintainer: The package maintainer <max.kroeschel@wildlife.uni-freiburg.de>
+Maintainer: The package maintainer <max.kroeschel@forst.bwl.de>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?

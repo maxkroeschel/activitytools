@@ -161,14 +161,14 @@ activity2states <- function(activity,
 
     if (nrow(active_states) == 0) {
         # return an empty table
-        return(data.table("state_id" = integer(),
+        return(data.table("state_id" = character(),
                           "to_active" = as.POSIXct(character()),
                           "end_active" = as.POSIXct(character()),
                           "duration" = integer(), #as.difftime(character(), units = "mins"),
                           "act_mean" = numeric(),
                           "act_var" = numeric()))
       } else {
-          return(active_states[,.("state_id" = 1:.N,
+          return(active_states[,.("state_id" = paste("a.",1:.N, sep = ""),
                               to_active,
                               end_active,
                               duration,
