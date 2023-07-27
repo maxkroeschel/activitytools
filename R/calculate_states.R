@@ -72,6 +72,7 @@ calculate_states <- function(activity,
 
   # Calculate activity states, proportional time active, and add activity state
   # to gps data (if it is available)
+
   for(t in thresholds){
     if(t %in% c("a", "b", "c")){
       print(paste0("Calculate active states based on 'threshold ", t, "' ..."))
@@ -118,9 +119,11 @@ calculate_states <- function(activity,
             states2resting(activity = activity$activity_data,
                            active_states = activity[[states_t]]$active_states,
                            activity_gaps = activity$activity_gaps,
-                           reg_minutes = activity$parameters$act.reg_minutes)
+                           act_ma = parameters$act_ma,
+                           reg_minutes = parameters$act.reg_minutes)
           print("done!")
-          }
+        }
+
         print(paste0("Classifying GPS data based on 'threshold ", t, "' ..."))
         activity[[states_t]]$gps_data <-
           states2gps(gps = activity$gps_data,
