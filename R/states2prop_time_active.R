@@ -101,13 +101,13 @@ do.call("rbind",
 
     deploy_start_ts <- trunc(temp_active_states[, min(to_active),], "mins")
     deploy_end_ts <- trunc(temp_active_states[, max(end_active),], "mins")
-    attr(deploy_start_ts, "tzone") <- NULL
-    attr(deploy_end_ts, "tzone") <- NULL
+    #attr(deploy_start_ts, "tzone") <- NULL
+    #attr(deploy_end_ts, "tzone") <- NULL
 
     animal_minutes <-
       data.table(minute = seq(deploy_start_ts, deploy_end_ts, by = "mins"),
                  active = 0)
-    attr(animal_minutes$minute, "tzone") <- NULL
+    #attr(animal_minutes$minute, "tzone") <- NULL
     animal_minutes[,tmp_minute := minute]
     animal_minutes[,date := as.Date(minute)]
 
@@ -178,8 +178,19 @@ do.call("rbind",
                            day_seq + lubridate::days(1),
                            solarDep=c(0),
                            direction="dawn", POSIXct.out=TRUE)$time)
-  attr(nighttime$ts_dawn_plusone, "tzone") <- NULL
-  attr(nighttime$ts_sr_plusone, "tzone") <- NULL
+
+  if (Sys.getenv("TZ") == 'UTC' & is.null(attr(nighttime$ts_dawn, "tzone"))) {
+    attr(nighttime$ts_dawn, "tzone") <- 'UTC'
+    attr(nighttime$ts_sr, "tzone") <- 'UTC'
+    attr(nighttime$ts_ss, "tzone") <- 'UTC'
+    attr(nighttime$ts_dusk, "tzone") <- 'UTC'
+    attr(nighttime$ts_dawn_plusone, "tzone") <- 'UTC'
+    attr(nighttime$ts_dusk, "tzone") <- 'UTC'
+    attr(nighttime$ts_sr_plusone, "tzone") <- 'UTC'
+  }
+
+  #attr(nighttime$ts_dawn_plusone, "tzone") <- NULL
+  #attr(nighttime$ts_sr_plusone, "tzone") <- NULL
   nighttime[,date_dawn := as.Date(ts_dawn)]
   nighttime[,date_sr := as.Date(ts_sr)]
 

@@ -11,6 +11,12 @@ load_all("./")
 data(activity_data)
 data(gps_data)
 
+# Check if the timestamps in the activity data and the gps data are specified correctly. All timestamps have to be in 'UTC'.
+attr(activity_data$ts, "tzone")
+attr(activity_data$ts, "tzone")<- 'UTC'
+attr(gps_data$ts, "tzone")
+attr(gps_data$ts, "tzone")<- 'UTC'
+
 # create parameter that is used for state classification
 activity_data$act_xy <- activity_data$act_x + activity_data$act_y
 
@@ -85,3 +91,4 @@ plot(act_red, select = "activity", select_animal_id = 1)
 
 # Active states
 plot(act_red, select = "states", threshold = c('b'))
+

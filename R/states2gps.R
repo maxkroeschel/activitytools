@@ -8,7 +8,7 @@
 #'  \code{\link{states2resting}}).
 #' @param activity_gaps A data.table with the activity gaps.
 #' @param gps A data.table with the GPS-positions of the animals.
-#' @param reg_minutes 
+#' @param reg_minutes
 #'
 #' @examples
 #'
@@ -27,13 +27,13 @@ states2gps <- function(active_states,
                        activity_gaps = NULL,
                        reg_minutes,
                        gps) {
-  
+
   # active_states <- act_cat$states_b$active_states
   # resting_states <- act_cat$states_b$resting_states
   # activity_gaps <- act_cat$activity_gaps
   # reg_minutes <- act_cat$parameters$act.reg_minutes
   # gps <- act_cat$gps_data
-  
+
   col_gps <- colnames(gps)
   gps <- copy(gps)
 
@@ -44,20 +44,20 @@ states2gps <- function(active_states,
   names(active_states)[names(active_states)== "end_active"] <- "state_end_ts"
   names(resting_states)[names(resting_states)== "to_resting"] <- "state_start_ts"
   names(resting_states)[names(resting_states)== "end_resting"] <- "state_end_ts"
-  
+
   states <- rbind(active_states, resting_states)
-  
-  # add 
-  states[, state_end_ts := state_end_ts + 
+
+  # add
+  states[, state_end_ts := state_end_ts +
                           lubridate::minutes(reg_minutes) - lubridate::seconds(1),]
-  
-  attr(states$state_end_ts, "tzone") <- NULL
-  attr(states$state_start_ts, "tzone") <- NULL
-  
+
+  #attr(states$state_end_ts, "tzone") <- NULL
+  #attr(states$state_start_ts, "tzone") <- NULL
+
   gps[, temp_ts := ts, ]
   setkey(gps, animal_tag, ts, temp_ts)
   setkey(states, animal_tag, state_start_ts, state_end_ts)
-  
+
   gps <- data.table::foverlaps(x = gps,
                                y = states,
                                by.x = c("animal_tag", "ts", "temp_ts"),
@@ -65,12 +65,12 @@ states2gps <- function(active_states,
                                type = "within")
   col_new <- c("state_id", "state_start_ts", "state_end_ts",
   "duration", "act_mean", "act_var", "state")
-  
+
   cols_remove <- names(gps)[!(names(gps) %in% c(col_gps, col_new))]
-  
+
   for (i in cols_remove) {
     gps[ , paste(i) := NULL, ]}
-  
+
   setcolorder(gps, c(col_gps, c("state_id", "state_start_ts", "state_end_ts",
                                 "duration", "act_mean", "act_var")))
 
