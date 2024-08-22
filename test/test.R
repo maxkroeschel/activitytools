@@ -19,12 +19,12 @@ activity_data$act_xy <- activity_data$act_x + activity_data$act_y
 pars <- list(act.act = "act_xy",
              act.reg_minutes = 5,
              act.width_ma = 2,
-             thresh.n_runs = 1,
-             thresh.window_width_around_day = 3,
-             thresh.n_thresholds = c(25:35),
-             thresh.resting_range_limit = 20,
-             thresh.threshold_range_limit = 80,
-             states.min_duration_active = 10,
+             # thresh.n_runs = 1,
+             # thresh.window_width_around_day = 3,
+             # thresh.n_thresholds = c(25:35),
+             # thresh.resting_range_limit = 0.2,
+             # thresh.threshold_range_limit = 0.8,
+             states.min_duration_active = 2,
              pta.pos = NULL,
              pta.dayshift = "dawn",
              pta.dawn_degree = 12,
@@ -33,7 +33,11 @@ pars <- list(act.act = "act_xy",
 
 # create activity object
   ## parameter can also be defined later
-deer <- activity(activity_data = activity_data, gps_data = gps_data, parameters = pars)
+act_red <-
+  activity(activity_data = activity_data,
+           gps_data = gps_data,
+           parameters = pars,
+           keep_source = FALSE)
 
 # activity data are often characterized by data gaps or duplicated data points
   # deer$activity_data[,.(min = min(diff(ts)),
@@ -44,7 +48,7 @@ deer <- activity(activity_data = activity_data, gps_data = gps_data, parameters 
 # --> create a data set with equal time intervals between the activity data (regularize)
 #     the regular time interal is defined by the parameter 'act.reg_minutes'
 
-deer <- regularize_activity(deer)
+act_red <- regularize_activity(act_red)
 
   # deer$activity_data[,.(min = min(diff(ts)),
   #                       max = max(diff(ts)),
@@ -53,27 +57,31 @@ deer <- regularize_activity(deer)
 
 
 # Smooth the activity axis with a moving average
-deer <- smooth_activity(deer)
+act_red <- smooth_activity(act_red)
 
 # Identify gaps in the activity data
-deer <- identify_activity_gaps(deer)
-(deer$activity_gaps)
+#deer <- identify_activity_gaps(deer)
+#(deer$activity_gaps)
 
 # Remove gaps in the activity data
-deer <- remove_activity_gaps(deer)
+act_red <- remove_activity_gaps(act_red)
 
+# View the activity data and test thresholds
+plot(act_red, select = "activity_eval", select_animal_id = 1)
 # Calculate thresholds (this might take some time !!!!!)
-deer <- calculate_thresholds(deer, plot_summary = TRUE)
+act_red <- calculate_thresholds(act_red, plot_summary = FALSE)
+
+plot(act_red, select = "thresholds")
 
 # Calculate states, the proportion of time in state active and assign each
 # GPS-position as active or resting (using parameter list defined above)
-deer <- calculate_states(deer)
+
+act_red <- calculate_states(act_red, thresholds = c("a", "b", "c"),
+                            add = c("pta", "gps"))
 
 # plotting options
-# Thresholds
-plot(deer, select = "thresholds")
 # Activity data
-plot(deer, animal_id = 1)
-plot(deer, select = "activity", animal_id = 1) # same
+plot(act_red, select = "activity", select_animal_id = 1)
+
 # Active states
-plot(deer, select="states", threshold = "a")
+plot(act_red, select = "states", threshold = c('b'))
