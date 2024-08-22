@@ -65,11 +65,11 @@ if (temp_activity[, max(ts),] > temp_active_states[, max(end_active),] ) {
                       "end_resting" =  temp_activity[, max(ts),]))
 }
 
-attr(temp_resting_states$to_resting, "tzone") <- NULL
-attr(temp_resting_states$end_resting, "tzone") <- NULL
+#attr(temp_resting_states$to_resting, "tzone") <- NULL
+#attr(temp_resting_states$end_resting, "tzone") <- NULL
 
-attr(temp_activity_gaps$to_NA, "tzone") <- NULL
-attr(temp_activity_gaps$end_NA, "tzone") <- NULL
+#attr(temp_activity_gaps$to_NA, "tzone") <- NULL
+#attr(temp_activity_gaps$end_NA, "tzone") <- NULL
 
 
 # remove data gaps
@@ -80,15 +80,15 @@ attr(temp_activity_gaps$end_NA, "tzone") <- NULL
 if (nrow(temp_activity_gaps) > 0) {
   setkey(temp_resting_states, animal_tag, to_resting, end_resting)
   setkey(temp_activity_gaps, animal_tag, to_NA, end_NA)
-  
+
   changes <- data.table::foverlaps(x = temp_activity_gaps,
                                    y = temp_resting_states,
                                    by.x = c("animal_tag", "to_NA", "end_NA"),
                                    by.y = c("animal_tag", "to_resting", "end_resting"),
                                    type = "within")
-  
+
   changes <- changes[!is.na(to_resting),, ]
-  
+
   for (i in (1:nrow(changes))) {
     if (changes[i, to_resting == to_NA & end_resting == end_NA]) {
       temp_resting_states <- temp_resting_states[!(animal_tag == changes[i, animal_tag,] &
@@ -102,7 +102,7 @@ if (nrow(temp_activity_gaps) > 0) {
                            to_resting == changes[i, to_resting,],
                          end_resting := changes[i, to_NA,] - lubridate::minutes(reg_minutes),]}
   }
-  
+
   rm(changes)
 }
 ## calculate summary statistics
