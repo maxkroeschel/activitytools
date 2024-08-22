@@ -16,7 +16,8 @@ Imports:
     manipulate,
     zoo,
     lubridate,
-    maptools,
-    sp
+    suntools,
+    sp,
+    sf
 Depends: 
     data.table

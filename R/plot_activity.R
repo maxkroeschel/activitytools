@@ -136,10 +136,10 @@ if (all(is.na(gps)) & all(all(is.na(states_a)), all(is.na(states_b)), all(is.na(
                         sep= ""))
 
 # add sunrise and sunset
-  dawn <- maptools::crepuscule(hr_center,  as.POSIXct(d_day, tz="UTC"),
+  dawn <- suntools::crepuscule(hr_center,  as.POSIXct(d_day, tz="UTC"),
                                solarDep=c(12,0), direction="dawn",
                                POSIXct.out=TRUE)
-  dusk <- maptools::crepuscule(hr_center,  as.POSIXct(d_day, tz="UTC"),
+  dusk <- suntools::crepuscule(hr_center,  as.POSIXct(d_day, tz="UTC"),
                                solarDep=c(12,0), direction="dusk",
                                POSIXct.out=TRUE)
   lines(x = c(dawn$time), y = rep(-(d_ylim_max/50),2), col = "grey",
@@ -304,10 +304,10 @@ manipulate::manipulate({
                       sep= ""))
 
   # add sunrise and sunset
-  dawn <- maptools::crepuscule(hr_center,  as.POSIXct(d_day, tz="UTC"),
+  dawn <- suntools::crepuscule(hr_center,  as.POSIXct(d_day, tz="UTC"),
                                solarDep=c(12,0), direction="dawn",
                                POSIXct.out=TRUE)
-  dusk <- maptools::crepuscule(hr_center,  as.POSIXct(d_day, tz="UTC"),
+  dusk <- suntools::crepuscule(hr_center,  as.POSIXct(d_day, tz="UTC"),
                                solarDep=c(12,0), direction="dusk",
                                POSIXct.out=TRUE)
   lines(x = c(dawn$time), y = rep(-(d_ylim_max/50),2), col = "grey",

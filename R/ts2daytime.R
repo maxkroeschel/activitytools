@@ -31,7 +31,7 @@ ts2daytime <- function(long,
 
 
   pos <- matrix(c(long, lat), nrow = length(long))
-  angle <- round(maptools::solarpos(pos,
+  angle <- round(suntools::solarpos(pos,
                                     ts), 2)
   if (type == "daytime") {
     daytime <- rep("night", times = nrow(angle))
