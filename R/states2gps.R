@@ -28,11 +28,11 @@ states2gps <- function(active_states,
                        reg_minutes,
                        gps) {
 
-  # active_states <- act_cat$states_b$active_states
-  # resting_states <- act_cat$states_b$resting_states
-  # activity_gaps <- act_cat$activity_gaps
-  # reg_minutes <- act_cat$parameters$act.reg_minutes
-  # gps <- act_cat$gps_data
+  # active_states <- act_red$states_b$active_states
+  # resting_states <- act_red$states_b$resting_states
+  # activity_gaps <- act_red$activity_gaps
+  # reg_minutes <- act_red$parameters$act.reg_minutes
+  # gps <- act_red$gps_data
 
   col_gps <- colnames(gps)
   gps <- copy(gps)

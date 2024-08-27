@@ -134,6 +134,15 @@ calculate_states <- function(activity,
         print("done!")
       }
     }
+
+    if("gps_tracks" %in% add){
+        print(paste0("Calculate gps_tracks based on 'threshold ", t, "' ..."))
+        activity[[states_t]]$gps_tracks <-
+          states2tracks( active_states = activity[[states_t]]$active_states,
+                         activity_gaps = activity$activity_gaps,
+                         gps = activity$gps)
+        print("done!")
+      }
     }
   }
   return(activity)

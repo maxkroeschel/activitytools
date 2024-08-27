@@ -82,8 +82,8 @@ plot(act_red, select = "thresholds")
 # Calculate states, the proportion of time in state active and assign each
 # GPS-position as active or resting (using parameter list defined above)
 
-act_red <- calculate_states(act_red, thresholds = c("a", "b", "c"),
-                            add = c("pta", "gps"))
+act_red <- calculate_states(act_red, thresholds = c( "b"),
+                            add = c("pta", "gps", "gps_tracks"))
 
 # plotting options
 # Activity data
