@@ -140,7 +140,9 @@ calculate_states <- function(activity,
         activity[[states_t]]$gps_tracks <-
           states2tracks( active_states = activity[[states_t]]$active_states,
                          activity_gaps = activity$activity_gaps,
-                         gps = activity$gps)
+                         gps = activity$gps,
+                         dayshift = activity$parameters$pta.dayshift,
+                         dawn_degree = activity$parameters$pta.dawn_degree)
         print("done!")
       }
     }

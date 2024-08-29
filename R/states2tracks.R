@@ -8,6 +8,12 @@
 #'    data (return of function \code{\link{identify_activity_gaps}}.
 #' @param gps A data.table with the GPS positions (at least one) of the animals.
 #'   The table should contain the columns: <animal_tag>, <longitude>, <latitude>.
+#' @param dayshift Either "sunrise" or "dawn". Defines when consecutive days are
+#'   separated so that each day contains one complete night and one complete day.
+#'   The identifier for each day is called <date_sr> for sunrise and <date_dawn>
+#'   for dawn.
+#' @param dawn_degree An integer between 0 and 90 that defines the angle of the
+#'   sun below the horizon at dawn and dusk.
 #' @return A data.table with the gps tracks containing start and end timestamps
 #' <ts_start, ts_end>, longitude and latitude of the start end end position
 #' <long_start, lat_start, long_end, lat_end>, the distance between
@@ -23,7 +29,9 @@
 
 states2tracks <- function(active_states,
                           activity_gaps,
-                          gps = NULL) {
+                          gps = NULL,
+                          dayshift = "sunrise",
+                          dawn_degree = 12) {
 
 
   # make sure that a spatial position is available for each animal to calculate
@@ -111,14 +119,106 @@ do.call("rbind",
                               by.x = c("minute", "tmp_minute"),
                               by.y = c("ts_start", "ts_end"))
 
-  sum_active_per_track <- animal_minutes[, .(active_minutes = sum(active)), by = track_id ]
+
+# calculate sunpositions and add these information to the gps_tracks
+
+  day_seq <- as.POSIXct(seq(from = as.Date(deploy_start_ts) - lubridate::days(1),
+                            to = as.Date(deploy_end_ts) + lubridate::days(1),
+                            by = "days"))
+
+  nighttime <- data.table(
+    "ts_dawn" = suntools::crepuscule(temp_pos,
+                                     day_seq,
+                                     solarDep=c(dawn_degree),
+                                     direction="dawn", POSIXct.out=TRUE)$time,
+    "ts_sr" = suntools::crepuscule(temp_pos,
+                                   day_seq,
+                                   solarDep=c(0),
+                                   direction="dawn",
+                                   POSIXct.out=TRUE)$time,
+    "ts_ss" = suntools::crepuscule(temp_pos,
+                                   day_seq,
+                                   solarDep=c(0),
+                                   direction="dusk", POSIXct.out=TRUE)$time,
+    "ts_dusk" = suntools::crepuscule(temp_pos,
+                                     day_seq,
+                                     solarDep=c(dawn_degree),
+                                     direction="dusk", POSIXct.out=TRUE)$time,
+    "ts_dawn_plusone" =
+      suntools::crepuscule(temp_pos,
+                           day_seq + lubridate::days(1),
+                           solarDep=c(dawn_degree),
+                           direction="dawn", POSIXct.out=TRUE)$time,
+    "ts_sr_plusone" =
+      suntools::crepuscule(temp_pos,
+                           day_seq + lubridate::days(1),
+                           solarDep=c(0),
+                           direction="dawn", POSIXct.out=TRUE)$time)
+
+  if (Sys.getenv("TZ") == 'UTC' & is.null(attr(nighttime$ts_dawn, "tzone"))) {
+    attr(nighttime$ts_dawn, "tzone") <- 'UTC'
+    attr(nighttime$ts_sr, "tzone") <- 'UTC'
+    attr(nighttime$ts_ss, "tzone") <- 'UTC'
+    attr(nighttime$ts_dusk, "tzone") <- 'UTC'
+    attr(nighttime$ts_dawn_plusone, "tzone") <- 'UTC'
+    attr(nighttime$ts_dusk, "tzone") <- 'UTC'
+    attr(nighttime$ts_sr_plusone, "tzone") <- 'UTC'
+  }
+
+  nighttime[,date_dawn := as.Date(ts_dawn)]
+  nighttime[,date_sr := as.Date(ts_sr)]
+
+  # Check for days when the sun did not set below dawn_degree. These days will be
+  # removed from the table.
+  if (nighttime[(is.na(ts_dawn) | is.na(ts_dawn_plusone)), .N,] > 0) {
+    days_with_no_night <- animal_minutes[,unique(date),][
+      nighttime[,(is.na(ts_dawn) | is.na(ts_dawn_plusone)),]]
+    print(paste("!!! The deployment period of this animals covers days at which the sun did not set below 'dawn_degree'. The following days were removed from the table:", paste(days_with_no_night, collapse  = ", "), sep = " "))
+    #    animal_minutes <- animal_minutes[!(date %in% days_with_no_night),,]
+    nighttime <- nighttime[!(is.na(ts_dawn) | is.na(ts_dawn_plusone)),,]
+  }
+
+  if (dayshift == "sunrise") {
+    setkey(nighttime, ts_sr, ts_sr_plusone)
+    setkey(animal_minutes, minute, tmp_minute)
+    animal_minutes <- foverlaps(animal_minutes, nighttime, type="within",
+                                by.x = c("minute", "tmp_minute"),
+                                by.y = c("ts_sr", "ts_sr_plusone"))
+
+    animal_minutes[, tod := "night"][
+        minute >= ts_dawn_plusone, tod := "dawn"][
+          minute >= ts_sr & minute < ts_ss, tod := "day"][
+            minute >= ts_ss & minute < ts_dusk, tod := "dusk"]
+    animal_minutes <- animal_minutes[!is.na(track_id),,]
+    sum_active_per_track <- animal_minutes[, .(active_minutes = sum(active),
+                                               tod = names(sort(table(tod), decreasing = TRUE)[1]),
+                                               date_sr = names(sort(table(date_sr), decreasing = TRUE)[1])),
+                                           by = track_id ]
+    } else
+      if (dayshift == "dawn") {
+        setkey(nighttime, ts_dawn, ts_dawn_plusone)
+        setkey(animal_minutes, minute, tmp_minute)
+        animal_minutes <- foverlaps(animal_minutes, nighttime, type="within",
+                                    by.x = c("minute", "tmp_minute"),
+                                    by.y = c("ts_dawn", "ts_dawn_plusone"))
+
+        animal_minutes[, tod := "night"][
+          minute >= ts_dawn & minute < ts_sr, tod := "dawn"][
+            minute >= ts_sr & minute < ts_ss, tod := "day"][
+              minute >= ts_ss & minute < ts_dusk, tod := "dusk"]
+        animal_minutes <- animal_minutes[!is.na(track_id),,]
+        sum_active_per_track <-
+          animal_minutes[, .(active_minutes = sum(active),
+                             tod = names(sort(table(tod), decreasing = TRUE)[1]),
+                             tod_span = paste(sort(unique(tod)), collapse = " "),
+                             date_dawn = names(sort(table(date_dawn), decreasing = TRUE)[1])),
+                                               by = track_id ]}
 
   temp_tracks <- merge(temp_tracks, sum_active_per_track, by = "track_id", all.x = TRUE)
 
 
   return(temp_tracks)
   }
-)
-)
+))
 
 return(gps_tracks)}
