@@ -53,7 +53,7 @@ states2tracks <- function(active_states,
 
 gps_tracks <-
 do.call("rbind",
-  lapply(active_states[, unique(animal_tag),], function(i) {
+  lapply(active_states[, unique(gps$animal_tag),], function(i) {
    # print(paste("animal_id:", i, " processing"))
 
     temp_active_states <- active_states[animal_tag == i,,]
