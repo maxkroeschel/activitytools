@@ -3,6 +3,7 @@
 S3method(plot,activity)
 export(activity)
 export(activity2states)
+export(states2tracks)
 export(activity2thresholds)
 export(add_gps_data)
 export(aggregate_thresholds)
